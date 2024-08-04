@@ -1,5 +1,4 @@
-﻿using AUTRA.Tekla;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +7,7 @@ namespace AUTRA.Design
     public class Project
     {
         //Things will be binded with THREE.js
-        public ProjectProperties ProjectProperties { get; set; }
+        //public ProjectProperties ProjectProperties { get; set; }
         public List<Node> Nodes { get; set; }
         public Material Material { get; set; }
         public List<Section> Sections { get; set; }
