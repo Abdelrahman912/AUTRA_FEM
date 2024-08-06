@@ -2,6 +2,7 @@
 using AUTRA.FEM.Entities.Geometries;
 using AUTRA.FEM.Entities.Solver;
 using MathNet.Numerics.LinearAlgebra;
+using AUTRA.FEM.Entities.Results;
 
 namespace AUTRA.FEM.Entities.Structures
 {
@@ -27,11 +28,12 @@ namespace AUTRA.FEM.Entities.Structures
         #endregion
 
         #region Methods
-        public Vector<double> Solve()
+        public PostProcessing Solve()
         {
             var (K, F) = Assembler.Assemble();
             var u = K.Solve(F);
-            return u ;
+            var postProcessing = new PostProcessing(Geometry, DofHandler, u);
+            return postProcessing;
         }
 
         #endregion

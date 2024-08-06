@@ -45,7 +45,8 @@ namespace AUTRA.FEM.Test
         static void Main(string[] args)
         {
            var structure = createStructure();
-            var u = structure.Solve();
+            var postProcessing = structure.Solve();
+            var force = postProcessing.ElementNormalForce;
         }
     }
 }

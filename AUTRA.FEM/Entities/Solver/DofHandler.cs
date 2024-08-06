@@ -86,7 +86,7 @@ namespace AUTRA.FEM.Entities.Solver
 
         public Matrix<double> GetElementStiffnessMatrix(int eleId)
         {
-            return _geometry.GetElementFromId(eleId).ComputeStiffnessMatrix();
+            return _geometry.GetElementFromId(eleId).K;
         }
 
         public Vector<double> GetNodalForce(int nodeId)
