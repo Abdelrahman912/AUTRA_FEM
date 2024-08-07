@@ -83,11 +83,13 @@ function createNodesX(editor, coordX, coordZ) {
     return nodes;
 }
 
-function createNodesZ(editor, coordX, coordZ) {
+function createNodes(editor, coordX,coordY, coordZ) {
     let nodes = [];
     for (let i = 0; i < coordZ.length; i++) {
         for (let j = 0; j < coordX.length; j++) {
-            Node.create(coordX[j], 0, coordZ[i], 'Hinge', editor, nodes);
+            for(let k = 0; k < coordY.length; k++){
+                Node.create(coordX[j], coordY[k], coordZ[i], null, editor, nodes);
+            }
         }
     }
     return nodes;

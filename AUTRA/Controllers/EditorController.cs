@@ -7,8 +7,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AUTRA.Data;
-using AUTRA.Design;
-using AUTRA.Helper;
 using AUTRA.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -46,24 +44,24 @@ namespace AUTRA.Controllers
         }
 
 
-        [HttpPost]
-        public string Solve([FromBody] Design.Project project)
-        {
-            project.Nodes.ModifyCoordinates();
-            Stopwatch stopwatch = new Stopwatch();
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var owner = _context.Projects.Find(userId, project.ProjectProperties.Name).Owner;
-            stopwatch.Start();
-            AUTRA.Init(project, "../AUTRA/wwwroot/Inputs/ToTekla.json", owner); //Harded coded path and where tekla save also hardcoded=> in AUTRA.Tekla=>Project=>project=> Init
-            stopwatch.Stop();
-            string response = JsonConvert.SerializeObject(project, new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
-                Converters = new List<JsonConverter> { new StringEnumConverter(new CamelCaseNamingStrategy()) }
-            });
+        //[HttpPost]
+        //public string Solve([FromBody] Design.Project project)
+        //{
+        //    project.Nodes.ModifyCoordinates();
+        //    Stopwatch stopwatch = new Stopwatch();
+        //    string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //    var owner = _context.Projects.Find(userId, project.ProjectProperties.Name).Owner;
+        //    stopwatch.Start();
+        //    AUTRA.Init(project, "../AUTRA/wwwroot/Inputs/ToTekla.json", owner); //Harded coded path and where tekla save also hardcoded=> in AUTRA.Tekla=>Project=>project=> Init
+        //    stopwatch.Stop();
+        //    string response = JsonConvert.SerializeObject(project, new JsonSerializerSettings
+        //    {
+        //        ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
+        //        Converters = new List<JsonConverter> { new StringEnumConverter(new CamelCaseNamingStrategy()) }
+        //    });
 
-            return response;
-        }
+        //    return response;
+        //}
 
         [HttpPost]
         public bool Save(Models.Project project, string jsonFile, IFormFile image)//id is projectName (for routing to bind the parameter)
@@ -94,10 +92,10 @@ namespace AUTRA.Controllers
             }
         }
 
-        [HttpPost]
-        public bool Model() //Model on Tekla
-        {
-            return AUTRA.InitTekla("../AUTRA/wwwroot/Inputs/ToTekla.json");
-        }
+        //[HttpPost]
+        //public bool Model() //Model on Tekla
+        //{
+        //    return AUTRA.InitTekla("../AUTRA/wwwroot/Inputs/ToTekla.json");
+        //}
     }
 }

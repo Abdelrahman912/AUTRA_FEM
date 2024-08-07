@@ -307,11 +307,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\AUTRA.Design\AUTRA.Design.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <Folder Include="wwwroot\assets\video\" />
   </ItemGroup>
 

@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Newtonsoft.Json;
-using AUTRA.Design;
 using System.Text.Json;
-using AUTRA.Helper;
 
 namespace AUTRA.Controllers
 {
