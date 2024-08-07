@@ -57,6 +57,8 @@ class Editor {
         this.scene.add(this.scene.userData.nodes);
         this.scene.userData.grids = new THREE.Group();
         this.scene.add(this.scene.userData.grids);
+        this.scene.userData.axes = new THREE.Group();
+        this.scene.add(this.scene.userData.axes);
         this.scene.userData.dimensions = new THREE.Group();
         this.scene.add(this.scene.userData.dimensions);
         this.scene.userData.loads = new THREE.Group();

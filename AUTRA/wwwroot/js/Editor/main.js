@@ -71,7 +71,7 @@
             editor.init(coordX[coordX.length - 1], coordZ[coordZ.length - 1]); //Setup editor
             editor.addToGroup(grids.gridLines, 'grids'); //Add x-grids to scene (as a group)this.meshInX
             editor.addToGroup(grids.gridNames, 'grids'); //Add z-grids to scene (as a group)
-            editor.addToGroup(grids.axes, 'grids'); //Add z-grids to scene (as a group)
+            editor.addToGroup(grids.axes, 'axes'); 
             editor.addToGroup(grids.dimensions, 'dimensions');
             
 
@@ -675,12 +675,14 @@
 
     window.hideDimensions = () => {
         editor.hideGroup('dimensions');
+        editor.hideGroup('grids');
         $('#hideDimensions').css('display', 'none');
         $('#showDimensions').css('display', 'block');
     }
 
     window.showDimensions = () => {
         editor.showGroup('dimensions');
+        editor.showGroup('grids');
         $('#showDimensions').css('display', 'none');
         $('#hideDimensions').css('display', 'block');
     }

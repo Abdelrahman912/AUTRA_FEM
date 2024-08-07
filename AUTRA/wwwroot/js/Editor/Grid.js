@@ -43,11 +43,15 @@ function Grid(coordX, coordZ, shift, levels) {
     let gridGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(coordX[0], 0, -shift),
         new THREE.Vector3(coordX[0], 0, this.zLength + shift)]);
 
-    for (let i = 1; i < numberInX; i++) {
+    for (let i = 0; i < numberInX; i++) {
         for (let j = 0; j < numberInY; j++) {
-            let geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(coordX[i], levels[j], -shift),
-                new THREE.Vector3(coordX[i], levels[j], this.zLength + shift)]);
-            gridGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridGeometry, geometry]);
+            if (j == 0 && i == 0) {
+                continue;
+            } else {
+                let geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(coordX[i], levels[j], -shift),
+                    new THREE.Vector3(coordX[i], levels[j], this.zLength + shift)]);
+                gridGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridGeometry, geometry]);
+            }
         }
     }
     //Fill the horizontal Group
