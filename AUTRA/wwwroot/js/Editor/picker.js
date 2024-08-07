@@ -107,6 +107,8 @@ class GPUPickHelper {
                 this.selectedObject.add(object);
                 object.material.color.setHex(object.material.color.getHex() + this.emissiveFlash);
                 if (object.userData.element) {
+                    $('#nodeData').css('display', 'none');
+                    $('#elementData').css('display', 'block');
                     let element = object.userData.element;
                     $('#beamId').val(element.data.elementId);
                     $('#beamSection').val(element.visual.sectionName);
@@ -114,6 +116,12 @@ class GPUPickHelper {
                     $('#beamEnd').val(`${element.visual.endPoint.x},${element.visual.endPoint.z},${element.visual.endPoint.y}`);
                     $('#beamDead').val(object.userData.element.data.lineLoads[0] ? `${object.userData.element.data.lineLoads[0].magnitude * -1} t/m` : 0);
                     $('#beamLive').val(object.userData.element.data.lineLoads[1] ? `${ object.userData.element.data.lineLoads[1].magnitude * -1 } t/m` : 0);
+                } else if (object.userData.node) {
+                    $('#elementData').css('display', 'nonde');
+                    $('#nodeData').css('display', 'block');
+                    let node = object.userData.node;
+                    $('#nodeId').val(node.data.$id);
+                    $('#nodePosition').val(`${node.data.position.x},${node.data.position.z},${node.data.position.y}`);
                 }
             }
             else {
