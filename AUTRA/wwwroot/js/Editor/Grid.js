@@ -74,6 +74,8 @@ function Grid(coordX, coordZ, shift, levels) {
         bevelEnabled: false
     };
 
+   
+
     let gridNamesGeometry = new THREE.TextBufferGeometry(``, geoProperties); //Empty geometry to append geometries in
     for (let i = 0; i < numberInX; i++) { //Vertical grids (letters)
         let geometry = new THREE.TextBufferGeometry(`${String.fromCharCode(i + 65)}`, geoProperties);
@@ -106,22 +108,66 @@ function Grid(coordX, coordZ, shift, levels) {
     */
     this.axes = new THREE.AxesHelper(shift);
     //let namesGeometry = new THREE.TextBufferGeometry('', geoProp);
+    let axesGeoProperties = {
+        font: myFont,
+        size: 0.25,
+        height: 0.01,
+        curveSegments: 3,
+        bevelEnabled: false
+    };
+    let xGeometry = new THREE.TextBufferGeometry('X', axesGeoProperties);
+    const axisLength = 1; // Length of the axes lines
+    xGeometry.applyMatrix4(matrix.makeTranslation(axisLength * 1.25, 0, 0));
 
-    let namesGeometry = new THREE.TextBufferGeometry(`X`, geoProperties);
-    namesGeometry.applyMatrix4(matrix.makeTranslation(shift, 0, 0));
-    //namesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([namesGeometry, xGeometry]);
+    let yGeometry = new THREE.TextBufferGeometry('Y', axesGeoProperties);
+    yGeometry.applyMatrix4(matrix.makeTranslation(0, 0, axisLength * 1.25));
 
-    let yGeometry = new THREE.TextBufferGeometry(`Y`, geoProperties);
-    yGeometry.applyMatrix4(matrix.makeTranslation(0, 0, shift));
-    namesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([namesGeometry, yGeometry]);
+    let zGeometry = new THREE.TextBufferGeometry('Z', axesGeoProperties);
+    zGeometry.applyMatrix4(matrix.makeTranslation(0, axisLength * 1.25, 0));
 
-    let zGeometry = new THREE.TextBufferGeometry(`Z`, geoProperties);
-    zGeometry.applyMatrix4(matrix.makeTranslation(0, shift, 0));
-    namesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([namesGeometry, zGeometry]);
+    let xMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red for X
+    let yMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // Blue for Y
+    let zMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green for Z
 
-    let lettersMesh = new THREE.Mesh(namesGeometry, textMaterial);
-    this.axes.add(lettersMesh);
+    let xMesh = new THREE.Mesh(xGeometry, xMaterial);
+    let yMesh = new THREE.Mesh(yGeometry, yMaterial);
+    let zMesh = new THREE.Mesh(zGeometry, zMaterial);
 
+    // Create a group to hold all the letters
+    this.axes = new THREE.Group();
+    this.axes.add(xMesh);
+    this.axes.add(yMesh);
+    this.axes.add(zMesh);
+
+    // Create the lines for the axes with length 1
+
+    const xLineGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(axisLength, 0, 0)
+    ]);
+    const yLineGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, axisLength)
+    ]);
+    const zLineGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, axisLength, 0)
+    ]);
+
+    const xLineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 }); // Red for X line
+    const yLineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff }); // Blue for Y line
+    const zLineMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 }); // Green for Z line
+
+    const xLine = new THREE.Line(xLineGeometry, xLineMaterial);
+    const yLine = new THREE.Line(yLineGeometry, yLineMaterial);
+    const zLine = new THREE.Line(zLineGeometry, zLineMaterial);
+
+    // Add the lines to the axes group
+    this.axes.add(xLine);
+    this.axes.add(yLine);
+    this.axes.add(zLine);
+
+    // Position the axes group
     this.axes.position.set(-shift * 1.5, 0, -shift * 1.5);
     //this.axes.position.set(-35, -15, -60);
     //#endregion
