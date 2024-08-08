@@ -12,13 +12,13 @@ let fontMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 let loadMaterial = new THREE.MeshStandardMaterial({ color: 0xcc0000, side: THREE.DoubleSide });
 
 class CustomArrow {
-    constructor(startPoint, direction, length, shaftRadius = 0.01, headRadius = 0.02) {
+    constructor(startPoint, direction, length, shaftRadius = 0.015, headRadius = 0.025) {
         this.startPoint = startPoint;
         this.direction = direction.normalize();
         this.length = length;
         this.shaftRadius = shaftRadius;
         this.headRadius = headRadius;
-        this.headLength = length * 0.15;
+        this.headLength = length * 0.2;
 
         this.arrowGroup = new THREE.Group();
         this.createArrow();
@@ -151,9 +151,23 @@ class PointLoad  {
     }
     render(position) {
         let length = this.components.length();
-        length = length < 0.25 ? 0.25 : length < 2.5 ? length * 0.5 : length*0.25;
+        if(length < 0.1){
+            length = 0.1;
+        }else if (length < 2.5){
+            length *= 0.5;
+        }else if (length > 25){
+            length *= 0.05;
+        }else if (length > 250){
+            length *= 0.005;
+        }else if (length > 2500){
+            length *= 0.0005;
+        }else if (length > 25000){
+            length *= 0.00005;
+        } else {
+            length *= 0.000025;
+        }
 
-        let  newPosition = position.add(this.components.clone().normalize().multiplyScalar(0.1));
+        let  newPosition = position.add(this.components.clone().normalize().multiplyScalar(-0.1-length));
 
         //let arrow = new THREE.ArrowHelper(this.components.normalize(), position, length, 0xcc00ff);
         let arrow = new CustomArrow(newPosition, this.components.normalize(), length);

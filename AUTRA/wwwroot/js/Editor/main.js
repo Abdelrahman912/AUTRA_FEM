@@ -444,15 +444,17 @@
         editor.addToGroup(pointLoad.render(node.data.position.clone()).arrowGroup, 'loads')
         
     }
-    window.endPointload = function () {
+    window.endPointLoad = function () {
         // Hide this div: pointLoadDetails
         $('#pointLoadDetails').css('display', 'none');
     }
 
-    window.hideLoads = () => editor.clearGroup('loads'); //Remove loads from the view
+    window.hideLoads = () => editor.hideGroup('loads'); //Remove loads from the view
 
     window.showLoads = function () { // Visualize all load in the selected case
+        console.log('show loads');
         editor.showGroup('loads');
+        console.log(editor);
         // let pattern = $('#showLoadCase').val();
         // editor.clearGroup('loads');
         // let index;

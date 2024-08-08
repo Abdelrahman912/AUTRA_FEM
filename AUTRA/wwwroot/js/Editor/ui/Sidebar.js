@@ -44,9 +44,9 @@ $(' #lineLoadIcon ').click(function () {
 $(' #pointLoadIcon ').click(function () {
     flipDiv('#pointLoadDetails');
 });
-$(' #showLoadIcon ').click(function () {
-    flipDiv('#showLoadDetails');
-});
+// $(' #showLoadIcon ').click(function () {
+//     flipDiv('#showLoadDetails');
+// });
 $(' #analysisResult ').click(function () {
     flipDiv('#analysisResultDetails');
 });
@@ -90,9 +90,9 @@ $(' #lineLoadBtn ').click(function () {
 $(' #pointLoadBtn ').click(function () {
     $('#pointLoadDetails').fadeOut();
 });
-$(' #showLoadBtn ').click(function () {
-    $('#showLoadDetails').fadeOut();
-});
+// $(' #showLoadBtn ').click(function () {
+//     $('#showLoadDetails').fadeOut();
+// });
 $(' #analysisResultBtn ').click(function () {
     $('#analysisResultDetails').fadeOut();
 
