@@ -3,6 +3,13 @@ let nodeMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
 let hingeMaterial = new THREE.MeshPhongMaterial({ color: 0x6633ff });
 let hingeGeometry = new THREE.ConeBufferGeometry(0.3, 0.3, 4);
 let id = 0;
+
+class Constraint{
+    constructor(ux,uy,uz){
+        this.free = [ux,uy,uz]; //bool values (true -> free, false -> fixed)
+    }
+}
+
 class Node {
     constructor(coordX, coordY, coordZ, support, nodeId) {
         this.data = {};
@@ -10,7 +17,8 @@ class Node {
         this.data.support = support ?? 0;
         this.data.position = new THREE.Vector3(coordX, coordY, coordZ);  //TODO : Switch Y & Z?!	
         this.data.pointLoads = [];
-
+        this.data.force = new THREE.Vector3(0, 0, 0);
+        this.data.constraint = new Constraint(true,true,true);
         this.visual = {};
         if (this.data.support) {
             this.visual.mesh = new THREE.Line(hingeGeometry, hingeMaterial.clone());
@@ -94,3 +102,24 @@ function createNodes(editor, coordX,coordY, coordZ) {
     }
     return nodes;
 }
+
+// Create Text denoting the nodes number
+function createNodeLabels(editor, nodes) {
+    let nodeNumbers = new THREE.Group();
+    for (let i = 0; i < nodes.length; i++) {
+        let textGeometry = new THREE.TextBufferGeometry(`${nodes[i].data.$id}`, {
+            font: myFont,
+            size: 0.2,
+            height: 0,
+            curveSegments: 3,
+            bevelEnabled: false
+        });
+        let text = new THREE.Mesh(textGeometry, fontMaterial);
+        text.position.set(nodes[i].data.position.x, nodes[i].data.position.y + 0.2 , nodes[i].data.position.z);
+        nodeNumbers.add(text);
+    }
+    editor.addToGroup(nodeNumbers, 'labels');
+    return nodeNumbers;
+    //TODO: Rotate text with camera
+}
+

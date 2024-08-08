@@ -1,3 +1,5 @@
+let lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+let zVector = new THREE.Vector3(0, 0, 1);
 function SectionDimensions(depth) { //Calculate the dimensions relative to it depth
     this.clearHeight = depth || 0.5;
     this.flangeWidth = 0.5 * depth || 0.25;
@@ -47,28 +49,29 @@ function createWireframe(startPoint, endPoint, material, rotation) { //Draw line
 }
 
 class ElementData { //Data required for analysis and design
-    constructor(sectionId, startPoint, endPoint, startNode, endNode) {
+    constructor(E,A, startPoint, endPoint, startNode, endNode) {
         this.elementId = ++ElementData.elementId; 
-        this.section = { "$ref": sectionId };
+        this.E = E; //Young's Modulus
+        this.A = A; //Cross Sectional Area
         this.startNode = startNode ? { "$ref": startNode.data.$id } : null; // Reference to node in JSON scheme
         this.endNode = endNode ? { "$ref": endNode.data.$id } : null; // Reference to node in JSON scheme
-        this.lineLoads = [];
+        //this.lineLoads = [];
         this.length = parseFloat((startPoint.distanceTo(endPoint)).toPrecision(4));
     }
     static elementId = 0;
 }
 
 class ElementVisual { // Visual data for editor
-    constructor(startPoint, endPoint, shape, lineMaterial, meshMaterial, direction, rotation, length, sectionName) {
+    constructor(startPoint, endPoint,  lineMaterial, direction, rotation) {
         this.direction = direction;
         this.wireframe = createWireframe(startPoint, endPoint, lineMaterial, rotation);
-        this.extruded = createExtrudedMesh(shape, length, meshMaterial);
+        //this.extruded = createExtrudedMesh(shape, length, meshMaterial);
         this.mesh = this.wireframe;                    //Currently rendered mesh
-        this.unusedMesh = this.extruded;               // not rendered currently
-        this.unusedMesh.userData = this.mesh.userData; //to save the same data at toggle view
-        this.temp = null;                              //Used to Swap Meshes at tougle view
+        //this.unusedMesh = this.extruded;               // not rendered currently
+        //this.unusedMesh.userData = this.mesh.userData; //to save the same data at toggle view
+        //this.temp = null;                              //Used to Swap Meshes at tougle view
         this.endPoint = endPoint;
-        this.sectionName = sectionName;
+        //this.sectionName = sectionName;
     }
 }
 
@@ -76,11 +79,11 @@ let pointGeometry = new THREE.SphereBufferGeometry(0.05, 15, 15);
 let pointMaterial = new THREE.MeshBasicMaterial({ color: 0xcc00dd });
 
 class FrameElement {
-    constructor(section, startPoint, endPoint, shape, lineMaterial, meshMaterial, startNode, endNode, direction, rotation) {
-        this.data = new ElementData(section.$id, startPoint, endPoint, startNode, endNode); //Data to be sent to backend
+    constructor(E,A, startPoint, endPoint, lineMaterial,  startNode, endNode, direction, rotation) {
+        this.data = new ElementData(E,A, startPoint, endPoint, startNode, endNode); //Data to be sent to backend
         //Graphical representation
-        this.visual = new ElementVisual(startPoint, endPoint, shape, lineMaterial, meshMaterial, direction,
-            rotation, this.data.length, section.name);
+        this.visual = new ElementVisual(startPoint, endPoint,  lineMaterial,  direction,rotation);
+        this.visual.mesh.userData.element = this;
     }
     move(displacement) {
         this.visual.endPoint.add(displacement);
@@ -130,4 +133,13 @@ class FrameElement {
             elements[i].visual.strainingActions.push(resultElements[i].combinedSA[0]);
         }
     }
+}
+
+function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNode){
+    let direction = (EndPoint.clone().sub(startPoint)).normalize();
+    let rotation = new THREE.Euler(-1 * direction.angleTo(zVector), 0, 0);
+    element =  new FrameElement(E,A, startPoint, EndPoint, lineMaterial, startNode, EndNode, direction, rotation);
+    editor.addToGroup(element.visual.mesh, 'elements');
+    editor.createPickingObject(element);
+    return element;
 }

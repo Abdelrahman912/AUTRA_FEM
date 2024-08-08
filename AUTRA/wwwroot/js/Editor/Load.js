@@ -7,8 +7,67 @@ loader.load('/lib/three.js/helvetiker_regular.typeface.json', function (font) {
 });
 
 
-let loadMaterial = new THREE.MeshBasicMaterial({ color: 0xcc0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
 let fontMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+let loadMaterial = new THREE.MeshStandardMaterial({ color: 0xcc0000, side: THREE.DoubleSide });
+
+class CustomArrow {
+    constructor(startPoint, direction, length, shaftRadius = 0.01, headRadius = 0.02) {
+        this.startPoint = startPoint;
+        this.direction = direction.normalize();
+        this.length = length;
+        this.shaftRadius = shaftRadius;
+        this.headRadius = headRadius;
+        this.headLength = length * 0.15;
+
+        this.arrowGroup = new THREE.Group();
+        this.createArrow();
+    }
+
+    createArrow() {
+        // Create the arrow shaft
+        const shaftGeometry = new THREE.CylinderGeometry(this.shaftRadius, this.shaftRadius, this.length - this.headLength, 12);
+        const shaft = new THREE.Mesh(shaftGeometry, loadMaterial);
+        shaft.castShadow = true;
+        shaft.receiveShadow = true;
+
+        // Position the shaft
+        shaft.position.copy(this.startPoint);
+        shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction);
+        shaft.position.add(this.direction.clone().multiplyScalar((this.length - this.headLength) / 2));
+
+        // // Create edges for the shaft
+        // const shaftEdges = new THREE.EdgesGeometry(shaftGeometry);
+        // const shaftLines = new THREE.LineSegments(shaftEdges, edgeMaterial);
+        // shaftLines.position.copy(shaft.position);
+        // shaftLines.quaternion.copy(shaft.quaternion);
+
+        // Create the arrow head
+        const headGeometry = new THREE.ConeGeometry(this.headRadius, this.headLength, 12);
+        const head = new THREE.Mesh(headGeometry, loadMaterial);
+        head.castShadow = true;
+        head.receiveShadow = true;
+
+        // Position the head
+        head.position.copy(this.startPoint);
+        head.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction);
+        head.position.add(this.direction.clone().multiplyScalar(this.length - this.headLength / 2));
+
+        // // Create edges for the head
+        // const headEdges = new THREE.EdgesGeometry(headGeometry);
+        // const headLines = new THREE.LineSegments(headEdges, edgeMaterial);
+        // headLines.position.copy(head.position);
+        // headLines.quaternion.copy(head.quaternion);
+
+        // Add the shaft, head, and their edges to the arrow group
+        this.arrowGroup.add(shaft);
+        this.arrowGroup.add(head);
+    }
+
+   
+}
+
+
 
 class Load {
     constructor(magnitude, pattern) {
@@ -86,31 +145,29 @@ class LineLoad extends Load {
 }
 
 let direction = new THREE.Vector3(0, -1, 0);
-class PointLoad extends Load {
-    constructor(magnitude, pattern) {
-        super(magnitude, pattern);
+class PointLoad  {
+    constructor(fx,fy,fz) {
+        this.components = new THREE.Vector3(fx, fz, fy);
     }
     render(position) {
-        if (this.magnitude) {
-            let height = (-0.42 * this.magnitude + 0.395);
-            height = height < 0.5 ? 0.5 : height > 2.5 ? 2.5 : height;
+        let length = this.components.length();
+        length = length < 0.25 ? 0.25 : length < 2.5 ? length * 0.5 : length*0.25;
 
-            position.y += height + 0.075;
+        let  newPosition = position.add(this.components.clone().normalize().multiplyScalar(0.1));
 
-            let arrow = new THREE.ArrowHelper(direction, position, height, 0xcc00ff);
-            let textGeometry = new THREE.TextBufferGeometry(`${this.magnitude * -1} t`, {
-                font: myFont,
-                size: 0.35 * height,
-                height: 0,
-                curveSegments: 3,
-                bevelEnabled: false
-            });
-            let text = new THREE.Mesh(textGeometry, fontMaterial);
-            text.rotateX(Math.PI);
-            arrow.add(text);
-            return arrow;
-        }
-        else
-            return null;
+        //let arrow = new THREE.ArrowHelper(this.components.normalize(), position, length, 0xcc00ff);
+        let arrow = new CustomArrow(newPosition, this.components.normalize(), length);
+        let textGeometry = new THREE.TextBufferGeometry(`(${this.components.x},${this.components.y},${this.components.z})`, {
+            font: myFont,
+            size: 0.3,
+            height: 0.01,
+            curveSegments: 3,
+            bevelEnabled: false
+        });
+        // let text = new THREE.Mesh(textGeometry, fontMaterial);
+        // //text.rotateX(Math.PI);
+        // arrow.arrowGroup.add(text);
+        return arrow;
+        
     }
 }

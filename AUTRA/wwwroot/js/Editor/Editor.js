@@ -65,6 +65,8 @@ class Editor {
         this.scene.add(this.scene.userData.loads);
         this.scene.userData.results = new THREE.Group();
         this.scene.add(this.scene.userData.results);
+        this.scene.userData.labels = new THREE.Group();
+        this.scene.add(this.scene.userData.labels);
 
         this.loop();
     }

@@ -228,9 +228,9 @@
                     </div>
                     <section class="ddList">
                         <ul>
+                            <li class="ddListItem" id="addNodeCoord">Draw node</li>
                             <li class="ddListItem" id="drawElement"> Draw Element </li>
-                            <li class="ddListItem" id="addNodeCoord">Draw node with coordinates </li>
-                            <li class="ddListItem" id="addNodeBeam"> Add node on beam</li>
+                            @* <li class="ddListItem" id="addNodeBeam"> Add node on beam</li> *@
                         </ul>
                     </section>
                 </section>
@@ -251,16 +251,16 @@
                 <section>
                     <div class="taskbarIconBlock">
                         <div class="flaticon-business icon">
-                            <div class="taskbarIconLabel">Loads</div>
+                            <div class="taskbarIconLabel">Forces</div>
                         </div>
                     </div>
                     <section class="ddList">
                         <ul>
                             @*<li class="ddListItem" id="floorLoadIcon">Add Floor load </li>*@
-                            <li class="ddListItem" id="lineLoadIcon"> Add Line load </li>
-                            <li class="ddListItem" id="pointLoadIcon"> Add Point load</li>
-                            <li class="ddListItem" id="showLoadIcon"> Show Loads</li>
-                            <li class="ddListItem" id="hideloadIcon" onclick="hideLoads()"> Hide loads</li>
+                            @* <li class="ddListItem" id="lineLoadIcon"> Add Line load </li> *@
+                            <li class="ddListItem" id="pointLoadIcon"> Add Nodal Force</li>
+                            <li class="ddListItem" id="showLoadIcon" onclick="showLoads()"> Show Forces</li>
+                            <li class="ddListItem" id="hideloadIcon" onclick="hideLoads()"> Hide Forces</li>
                         </ul>
                     </section>
                 </section>
@@ -313,46 +313,38 @@
         </div>
     </nav>
     <div class="optionsDetails">
-        <div id="drawElementDetails" class="popupDiv meduimDivSize">
-            <div class="innerDiv">
-                <button class="popupBtn myBtn3" id="drawElementBtn"><i class="fas fa-times"></i></button>
+        <div id="drawElementDetails" class="popupDiv large2DivSize" style="padding-top: 5px;">
+            <div class="innerDiv" >
                 <table>
                     <thead>
-                        <th>
+                        <th style="width: 100%; text-align: right;">
                             Draw Element
                         </th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Choose Section </td>
-                            <td>
-                                <select id="drawSection" style="width:120%;">
-                                    <option value="IPE80">IPE80</option>
-                                    <option value="IPE100">IPE100</option>
-                                    <option value="IPE120">IPE120</option>
-                                    <option value="IPE140">IPE140</option>
-                                    <option value="IPE160">IPE160</option>
-                                    <option value="IPE180">IPE180</option>
-                                    <option value="IPE200">IPE200</option>
-                                    <option value="IPE220">IPE220</option>
-                                    <option value="IPE240">IPE240</option>
-                                    <option value="IPE270">IPE270</option>
-                                    <option value="IPE300">IPE300</option>
-                                    <option value="IPE330">IPE330</option>
-                                    <option value="IPE360">IPE360</option>
-                                    <option value="IPE400">IPE400</option>
-                                    <option value="IPE450">IPE450</option>
-                                    <option value="IPE500">IPE500</option>
-                                    <option value="IPE550">IPE550</option>
-                                    <option value="IPE600">IPE600</option>
-                                </select>
-                            </td>
+                            <th>Start Node Id</th>
+                            <td><input type="text" id="startNodeNumber" size="5"></td>
+                        </tr>
+                        <tr>
+                            <th>End Node Id</th>
+                            <td><input type="text" id="endNodeNumber" size="5"></td>
+                        </tr>
+                        <tr>
+                            <th>Cross Sec. Area (A)</th>
+                            <td><input type="text" id="crossSectionalArea" size="5"></td>
+                        </tr>
+                        <tr>
+                            <th>Young Modulus (E)</th>
+                            <td><input type="text" id="modulusOfElasticity" size="5"></td>
                         </tr>
                     </tbody>
                 </table>
                 <br>
-                <button class="myBtn" onclick="startDrawMode()">start Draw Mode</button> <br>
-                <button class="myBtn" onclick="endDrawMode()">end Draw Mode</button>
+                <div class="buttonContainer" style="text-align: center;">
+                    <button class="myBtn" onclick="startDrawMode()">Draw</button>
+                    <button class="myBtn" onclick="endDrawMode()">Close</button>
+                </div>
             </div>
         </div>
         <div id="addNodeCoordDetails" class="popupDiv narrowShortDivSize">
@@ -554,48 +546,43 @@
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Replace</td>
-                            <td><input type="checkbox" id="replaceLineLoad" size="5"> </td>
-                        </tr>
                     </tbody>
                 </table>
                 <br>
                 <button type="button" class="myBtn" onclick="addLineLoad()">Done</button>
             </div>
         </div>
-        <div id="pointLoadDetails" class="popupDiv large2DivSize">
+        <div id="pointLoadDetails" class="popupDiv large2DivSize" style="padding-top: 5px;">
             <div class="innerDiv">
-                <button class="popupBtn myBtn22" id="pointLoadBtn"><i class="fas fa-times"></i></button>
                 <table>
                     <thead>
                         <tr>
-                            <th>Add point Load</th>
+                            <th style="text-align: right; width: 100%;">Add Nodal Force</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Load Magnitude &nbsp;</td>
-                            <td><input type="text" id="pointLoad" size="5"></td>
-                            <td> &nbsp; ton </td>
+                            <td>Node Id &nbsp;</td>
+                            <td><input type="text" id="loadNodeId" size="5"></td>
+                        <tr>
+                            <td>Fx &nbsp;</td>
+                            <td><input type="text" id="fx" size="5"></td>
                         </tr>
                         <tr>
-                            <td>Load pattern &nbsp;</td>
-                            <td>
-                                <select id="pointLoadCase" style="width:100%;">
-                                    <option value="dead">Dead</option>
-                                    <option value="live">Live</option>
-                                </select>
-                            </td>
+                            <td>Fy &nbsp;</td>
+                            <td><input type="text" id="fy" size="5"></td>
                         </tr>
                         <tr>
-                            <td>Replace</td>
-                            <td><input type="checkbox" id="replacePointLoad" size="5"> </td>
+                            <td>Fz &nbsp;</td>
+                            <td><input type="text" id="fz" size="5"></td>
                         </tr>
                     </tbody>
                 </table>
                 <br>
-                <button type="button" class="myBtn" onclick="addPointLoad()">Done</button>
+                <div class="buttonContainer" style="text-align: center;">
+                    <button class="myBtn" onclick="addPointLoad()">Add</button>
+                    <button class="myBtn" onclick="endPointLoad()">Close</button>
+                </div>
             </div>
         </div>
         <div id="showLoadDetails" class="popupDiv meduimDivSize">
@@ -750,16 +737,19 @@
     <div id="elementData" style="position:absolute;bottom:20px;right:20px;display: none">
         Element Data :
         ID <input type="text" id="beamId" disabled size="3" style="margin-left:5px;padding-left:5px">
-        Section <input type="text" id="beamSection" disabled size="7" style="margin-left:5px;padding-left:5px">
         StartPosition<input type="text" id="beamStart" disabled size="7" style="margin-left:5px;padding-left:5px">
         EndPosition<input type="text" id="beamEnd" disabled size="7" style="margin-left:5px;padding-left:5px">
-        DeadLoad<input type="text" id="beamDead" disabled size="7" style="margin-left:5px;padding-left:5px">
-        LiveLoad<input type="text" id="beamLive" disabled size="7" style="margin-left:5px;padding-left:5px">
+        A <input type="text" id="area" disabled size="7" style="margin-left:5px;padding-left:5px">
+        E <input type="text" id="modulusE" disabled size="7" style="margin-left:5px;padding-left:5px">
+        @* DeadLoad<input type="text" id="beamDead" disabled size="7" style="margin-left:5px;padding-left:5px"> *@
+        @* LiveLoad<input type="text" id="beamLive" disabled size="7" style="margin-left:5px;padding-left:5px"> *@
     </div>
     <div id="nodeData" style="position:absolute;bottom:20px;right:20px">
         Node Data :
         ID <input type="text" id="nodeId" disabled size="3" style="margin-left:5px;padding-left:5px">
         Position <input type="text" id="nodePosition" disabled size="7" style="margin-left:5px;padding-left:5px">
+        Load <input type="text" id="nodeLoad" disabled size="7" style="margin-left:5px;padding-left:5px">
+        Constraint <input type="text" id="nodeConstraint" disabled size="7" style="margin-left:5px;padding-left:5px">
     </div>
 
 

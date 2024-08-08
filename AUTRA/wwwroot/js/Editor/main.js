@@ -73,6 +73,7 @@
             editor.addToGroup(grids.gridNames, 'grids'); //Add z-grids to scene (as a group)
             editor.addToGroup(grids.axes, 'axes'); 
             editor.addToGroup(grids.dimensions, 'dimensions');
+
             
 
 
@@ -84,7 +85,7 @@
                 //creating and adding the Hinged-Nodes to MainNodes Array
                 let nodesResult = createNodes(editor, coordX, levels, coordZ);
                 nodes= nodes.concat( nodesResult);
-
+                createNodeLabels(editor, nodes);
                 //for (let i = 1; i < levels.length; i++) {
 
                 //    [mainBeamsLoop, secondaryBeamsLoop, mainNodesLoop, secNodesLoop, secSpacings] = generateMainBeamsX(editor, coordX, levels[i], coordZ,
@@ -218,6 +219,7 @@
             multiple = true;
     }
 
+    // draw element function
     function drawElement() {
         let element;
         let sectionName = $('#drawSection').val();
@@ -421,43 +423,58 @@
     }
 
     window.addPointLoad = function () { //Adds a PointLoad to the selected node(s)
-        editor.clearGroup('loads');
-        let replace = $('#replacePointLoad').prop('checked'); //Wether to replace the existing load (if any) or add to it
-        let pointLoad = new PointLoad(parseFloat($('#pointLoad').val()), $('#pointLoadCase').val());
-        for (let element of editor.picker.selectedObject) {
-            if (element.userData.node) {
-                let node = element.userData.node;
-                let loadIndex = node.addLoad(pointLoad, replace);
-                editor.addToGroup(node.data.pointLoads[loadIndex].render(node.data.position.clone()), 'loads')
-            }
+        //editor.clearGroup('loads');
+        // get node id
+        let nodeId = $('#loadNodeId').val();
+        //get the crosponding node
+        let node = nodes.find(n => n.data.$id === nodeId);
+        //check if the node exists
+        if (!node) {
+            showInfoModal('Node not found');
+            return;
         }
+        // get the load value (i.e. fx, fy, fz)
+        let fx = $('#fx').val();
+        let fy = $('#fy').val();
+        let fz = $('#fz').val();
+
+        let pointLoad = new PointLoad(fx, fy, fz);
+        node.data.force = new THREE.Vector3(parseFloat(fx), parseFloat(fy), parseFloat(fz));
+        //let loadIndex = node.addLoad(pointLoad, replace);
+        editor.addToGroup(pointLoad.render(node.data.position.clone()).arrowGroup, 'loads')
+        
+    }
+    window.endPointload = function () {
+        // Hide this div: pointLoadDetails
+        $('#pointLoadDetails').css('display', 'none');
     }
 
     window.hideLoads = () => editor.clearGroup('loads'); //Remove loads from the view
 
     window.showLoads = function () { // Visualize all load in the selected case
-        let pattern = $('#showLoadCase').val();
-        editor.clearGroup('loads');
-        let index;
-        for (let i = 0; i < secondaryBeams.length; i++) { //Show loads on secondary beams
-            for (let j = 0; j < secondaryBeams[i].length; j++) {
-                index = secondaryBeams[i][j].data.lineLoads.findIndex(l => l.pattern == pattern);
-                if (index > -1)
-                    editor.addToGroup((secondaryBeams[i][j].data.lineLoads[index]).render(secondaryBeams[i][j]), 'loads');
-            }
-        }
-        for (let i = 0; i < mainBeams.length; i++) {//Show loads on main beams
-            for (let j = 0; j < mainBeams[i].length; j++) {
-                index = mainBeams[i][j].data.lineLoads.findIndex(l => l.pattern == pattern);
-                if (index > -1)
-                    editor.addToGroup((mainBeams[i][j].data.lineLoads[index]).render(mainBeams[i][j]), 'loads');
-            }
-        }
-        for (let i = 0; i < nodes.length; i++) {//Show loads on columns
-            index = nodes[i].data.pointLoads.findIndex(l => l.pattern == pattern);
-            if (index > -1)
-                editor.addToGroup((nodes[i].data.pointLoads[index]).render(nodes[i].data.position.clone()), 'loads');
-        }
+        editor.showGroup('loads');
+        // let pattern = $('#showLoadCase').val();
+        // editor.clearGroup('loads');
+        // let index;
+        // for (let i = 0; i < secondaryBeams.length; i++) { //Show loads on secondary beams
+        //     for (let j = 0; j < secondaryBeams[i].length; j++) {
+        //         index = secondaryBeams[i][j].data.lineLoads.findIndex(l => l.pattern == pattern);
+        //         if (index > -1)
+        //             editor.addToGroup((secondaryBeams[i][j].data.lineLoads[index]).render(secondaryBeams[i][j]), 'loads');
+        //     }
+        // }
+        // for (let i = 0; i < mainBeams.length; i++) {//Show loads on main beams
+        //     for (let j = 0; j < mainBeams[i].length; j++) {
+        //         index = mainBeams[i][j].data.lineLoads.findIndex(l => l.pattern == pattern);
+        //         if (index > -1)
+        //             editor.addToGroup((mainBeams[i][j].data.lineLoads[index]).render(mainBeams[i][j]), 'loads');
+        //     }
+        // }
+        // for (let i = 0; i < nodes.length; i++) {//Show loads on columns
+        //     index = nodes[i].data.pointLoads.findIndex(l => l.pattern == pattern);
+        //     if (index > -1)
+        //         editor.addToGroup((nodes[i].data.pointLoads[index]).render(nodes[i].data.position.clone()), 'loads');
+        // }
     }
 
     window.changeSection = function () {
@@ -503,13 +520,66 @@
         }
     }
 
-    window.startDrawMode = () => draw = true;
+    window.startDrawMode = () => 
+    {
+        // get start node id
+        // get end node id
+        // get cross section area
+        // get modulus of elasticity
+        // draw frame element
+        let startNodeId = $('#startNodeNumber').val();
+        let endNodeId = $('#endNodeNumber').val();
+        // check if start node and end node are the same
+        if (startNodeId === endNodeId) {
+            showInfoModal('Start node and end node cannot be the same');
+            return;
+        }
+        // get cross section area
+        let crossSectionArea = $('#crossSectionalArea').val();
+        // check cross section area is number greater than zero
+        if (isNaN(crossSectionArea) || crossSectionArea <= 0) {
+            showInfoModal('Cross section area must be a number greater than zero');
+            return;
+        }
+        // get modulus of elasticity
+        let modulusOfElasticity = $('#modulusOfElasticity').val();
+        // check modulus of elasticity is number greater than zero
+        if (isNaN(modulusOfElasticity) || modulusOfElasticity <= 0) {
+            showInfoModal('Modulus of elasticity must be a number greater than zero');
+            return;
+        }
+        // get start node
+        let startNode = nodes.find(n => n.data.$id === startNodeId);
+        // check node exists
+        if (!startNode) {
+            showInfoModal('Start node does not exist');
+            return;
+        }
+        // get end node
+        let endNode = nodes.find(n => n.data.$id === endNodeId);
+        // check node exists
+        if (!endNode) {
+            showInfoModal('End node does not exist');
+            return;
+        }
+        // start draw frame element
+        
+        // get start node position
+        let startPosition = startNode.data.position;
+        // get end node position
+        let endPosition = endNode.data.position;
+        // get direction
+        let element = createFrameElement(editor,modulusOfElasticity,crossSectionArea,startPosition, endPosition, startNode, endNode);
+        trussElements.push(element);
+    }
     window.endDrawMode = () => {
-        draw = false;
-        if (drawingPoints[0])
-            drawingPoints[0].visual.mesh.material.color.setHex(0xffcc00); //Restore the first node color
+        //  hide this div drawElementDetails
+        $('#drawElementDetails').css('display', 'none');
+        // draw = false;
+        // if (drawingPoints[0])
+        //     drawingPoints[0].visual.mesh.material.color.setHex(0xffcc00); //Restore the first node color
 
-        drawingPoints = [];
+        // drawingPoints = [];
     }
 
     function createModel() { //Serialize model components to JSON
@@ -676,6 +746,7 @@
     window.hideDimensions = () => {
         editor.hideGroup('dimensions');
         editor.hideGroup('grids');
+        editor.hideGroup('labels');
         $('#hideDimensions').css('display', 'none');
         $('#showDimensions').css('display', 'block');
     }
@@ -683,6 +754,7 @@
     window.showDimensions = () => {
         editor.showGroup('dimensions');
         editor.showGroup('grids');
+        editor.showGroup('labels');
         $('#showDimensions').css('display', 'none');
         $('#hideDimensions').css('display', 'block');
     }

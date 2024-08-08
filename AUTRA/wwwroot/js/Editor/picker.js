@@ -106,22 +106,31 @@ class GPUPickHelper {
             if (!this.selectedObject.has(object)) {
                 this.selectedObject.add(object);
                 object.material.color.setHex(object.material.color.getHex() + this.emissiveFlash);
+                console.log(object.userData);
                 if (object.userData.element) {
                     $('#nodeData').css('display', 'none');
                     $('#elementData').css('display', 'block');
                     let element = object.userData.element;
                     $('#beamId').val(element.data.elementId);
-                    $('#beamSection').val(element.visual.sectionName);
+                    $('#area').val(element.data.A);
+                    $('#modulusE').val(element.data.E);  
+                    console.log(element.data.E);
                     $('#beamStart').val(`${object.position.x},${object.position.z},${object.position.y}`);
                     $('#beamEnd').val(`${element.visual.endPoint.x},${element.visual.endPoint.z},${element.visual.endPoint.y}`);
-                    $('#beamDead').val(object.userData.element.data.lineLoads[0] ? `${object.userData.element.data.lineLoads[0].magnitude * -1} t/m` : 0);
-                    $('#beamLive').val(object.userData.element.data.lineLoads[1] ? `${ object.userData.element.data.lineLoads[1].magnitude * -1 } t/m` : 0);
                 } else if (object.userData.node) {
-                    $('#elementData').css('display', 'nonde');
+                    $('#elementData').css('display', 'none');
                     $('#nodeData').css('display', 'block');
                     let node = object.userData.node;
                     $('#nodeId').val(node.data.$id);
                     $('#nodePosition').val(`${node.data.position.x},${node.data.position.z},${node.data.position.y}`);
+                    $('#nodeLoad').val(`${node.data.force.x},${node.data.force.y},${node.data.force.z}`);
+                    let constraint = node.data.constraint;
+                    console.log(constraint);
+                    // read the free array in constraint and change true -> R and false -> F
+                    $('#nodeConstraint').val(`${constraint.free[0] ? 'R' : 'F'},${constraint.free[1] ? 'R' : 'F'},${constraint.free[2] ? 'R' : 'F'}`);
+                } else {
+                    $('#elementData').css('display', 'none');
+                    $('#nodeData').css('display', 'none');
                 }
             }
             else {

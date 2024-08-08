@@ -72,7 +72,7 @@ function Grid(coordX, coordZ, shift, levels) {
     let matrix = new THREE.Matrix4();
     let geoProperties = {
         font: myFont,
-        size: 0.75,
+        size: 0.5,
         height: 0,
         curveSegments: 3,
         bevelEnabled: false
@@ -110,7 +110,7 @@ function Grid(coordX, coordZ, shift, levels) {
     this.axes.add(new THREE.ArrowHelper(zDirection, new THREE.Vector3(), this.lineLengthInZ, 0x00ff00, 0.05 * this.lineLengthInZ));//y-Axis(In UI)
     this.axes.add(new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), height + shift, 0x0000ff, 0.05 * (height + shift)));//z-Axis(In UI)
     */
-    this.axes = new THREE.AxesHelper(shift);
+    //this.axes = new THREE.AxesHelper(shift);
     //let namesGeometry = new THREE.TextBufferGeometry('', geoProp);
     let axesGeoProperties = {
         font: myFont,
