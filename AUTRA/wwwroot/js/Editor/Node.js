@@ -1,7 +1,5 @@
 let nodeGeometry = new THREE.SphereBufferGeometry(0.1, 32, 32);
 let nodeMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
-let hingeMaterial = new THREE.MeshPhongMaterial({ color: 0x6633ff });
-let hingeGeometry = new THREE.ConeBufferGeometry(0.3, 0.3, 4);
 let id = 0;
 
 

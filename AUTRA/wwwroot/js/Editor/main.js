@@ -437,8 +437,7 @@
         let fx = $('#fx').val();
         let fy = $('#fy').val();
         let fz = $('#fz').val();
-
-        let pointLoad = new PointLoad(nodeId,fx, fy, fz);
+        let newForce = new THREE.Vector3(parseFloat(fx), parseFloat(fy), parseFloat(fz));
         //check if the node has a none zero force and if so we need to remove it from the scene
         if (node.data.force.length() > 0) {
             //remove the existing load from the scene
@@ -447,13 +446,19 @@
             console.log(arrow);
             // remove the arrow from the scene
             editor.removeFromGroup(arrow.arrowGroup, 'loads');
+            // remove the arrow from the visualObjects
+            editor.visualObjects.Loads = editor.visualObjects.Loads.filter(v => v.nodeId !== nodeId);
+            console.log(editor.visualObjects.Loads);
         }
-        node.data.force = new THREE.Vector3(parseFloat(fx), parseFloat(fy), parseFloat(fz));
-        //let loadIndex = node.addLoad(pointLoad, replace);
-        // add arrowgroup to visualObjects
-        let arrow = pointLoad.render(node.data.position.clone());
-        editor.visualObjects.Loads.push(arrow);
-        editor.addToGroup(arrow.arrowGroup, 'loads')
+        node.data.force = newForce;
+        if (newForce.length() > 0) {
+            let pointLoad = new PointLoad(nodeId,fx, fy, fz);
+            //let loadIndex = node.addLoad(pointLoad, replace);
+            // add arrowgroup to visualObjects
+            let arrow = pointLoad.render(node.data.position.clone());
+            editor.visualObjects.Loads.push(arrow);
+            editor.addToGroup(arrow.arrowGroup, 'loads')
+        }
         
     }
     window.endPointLoad = function () {
@@ -522,9 +527,31 @@
         let ux = $('#ux').val() === 'Free' ? true : false;
         let uy = $('#uy').val() === 'Free' ? true : false;
         let uz = $('#uz').val() === 'Free' ? true : false;
+        console.log(ux, uy, uz);
+        console.log(typeof($('#ux').val()));
         // create constraint object
         let constraint = new Constraint(ux, uy, uz);
-        console.log(constraint);
+        // check if the node has a constraint that at least one of its values is false
+        if (!node.data.constraint.isAllFree()) {
+            // remove the existing constraint from the scene
+            // get constraint from the visualObjects using nodeid
+            console.log(editor.visualObjects.Constraints);
+            let constraintViz = editor.visualObjects.Constraints.find(v => v.nodeId === nodeId);
+            // remove the constraint from the scene
+            editor.removeFromGroup(constraintViz.group, 'constraints');
+            // remove the constraint from the visualObjects
+            editor.visualObjects.Constraints = editor.visualObjects.Constraints.filter(v => v.nodeId !== nodeId);
+            console.log(editor.visualObjects.Constraints);
+        }
+        node.data.constraint = constraint;
+        console.log(constraint.isAllFree());
+        if (!constraint.isAllFree()) {
+            // add constraint to visualObjects
+            let constraintViz = new ConstraintViz(nodeId, node.data.position.clone(), ux, uy, uz);
+            editor.visualObjects.Constraints.push(constraintViz);
+            editor.addToGroup(constraintViz.group, 'constraints');
+            console.log(constraintViz);
+        }
     }
 
     window.changeSection = function () {

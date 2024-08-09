@@ -10,6 +10,7 @@ function pickingObject(object, id) { //The object in picking scene used to pick 
 class VisualObjectsDictionary {
     constructor() {
         this.Loads = [];
+        this.Constraints = [];
     }}
 class Editor {
     constructor() {
@@ -71,6 +72,8 @@ class Editor {
         this.scene.add(this.scene.userData.results);
         this.scene.userData.labels = new THREE.Group();
         this.scene.add(this.scene.userData.labels);
+        this.scene.userData.constraints = new THREE.Group();
+        this.scene.add(this.scene.userData.constraints);
 
         this.loop();
     }
