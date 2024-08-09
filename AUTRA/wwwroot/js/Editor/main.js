@@ -438,10 +438,22 @@
         let fy = $('#fy').val();
         let fz = $('#fz').val();
 
-        let pointLoad = new PointLoad(fx, fy, fz);
+        let pointLoad = new PointLoad(nodeId,fx, fy, fz);
+        //check if the node has a none zero force and if so we need to remove it from the scene
+        if (node.data.force.length() > 0) {
+            //remove the existing load from the scene
+            // get arrow from the visualObjects using nodeid
+            let arrow = editor.visualObjects.Loads.find(v => v.nodeId === nodeId);
+            console.log(arrow);
+            // remove the arrow from the scene
+            editor.removeFromGroup(arrow.arrowGroup, 'loads');
+        }
         node.data.force = new THREE.Vector3(parseFloat(fx), parseFloat(fy), parseFloat(fz));
         //let loadIndex = node.addLoad(pointLoad, replace);
-        editor.addToGroup(pointLoad.render(node.data.position.clone()).arrowGroup, 'loads')
+        // add arrowgroup to visualObjects
+        let arrow = pointLoad.render(node.data.position.clone());
+        editor.visualObjects.Loads.push(arrow);
+        editor.addToGroup(arrow.arrowGroup, 'loads')
         
     }
     window.endPointLoad = function () {

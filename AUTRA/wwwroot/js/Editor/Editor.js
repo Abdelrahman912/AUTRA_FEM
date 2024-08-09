@@ -7,9 +7,13 @@ function pickingObject(object, id) { //The object in picking scene used to pick 
     object.visual.mesh.userData.picking = mesh; // The object has a reference to its picking object
     return mesh;
 }
-
+class VisualObjectsDictionary {
+    constructor() {
+        this.Loads = [];
+    }}
 class Editor {
     constructor() {
+        this.visualObjects = new VisualObjectsDictionary();
         this.scene = new THREE.Scene();
         this.pickingScene = new THREE.Scene();
         this.picker = new GPUPickHelper();
@@ -77,16 +81,54 @@ class Editor {
     addToGroup(object, type) { //add object to one of the created groups(elements,nodes.....)
         this.scene.userData[type].add(object);
     }
-    removeFromGroup(object, type) { //remove object from one of the created groups
+    // removeFromGroup(object, type) { //remove object from one of the created groups
+    //     this.scene.userData[type].remove(object);
+    //     object.geometry.dispose();
+    //     object.material.dispose();
+    //     if (object.userData.picking) {
+    //         this.pickingScene.remove(object.userData.picking)
+    //         object.userData.picking.material.dispose();
+    //         object.userData.picking.geometry.dispose();
+    //     }
+    // }
+    removeFromGroup(object, type) {
+        // Remove the object from the scene's group
         this.scene.userData[type].remove(object);
-        object.geometry.dispose();
-        object.material.dispose();
-        if (object.userData.picking) {
-            this.pickingScene.remove(object.userData.picking)
-            object.userData.picking.material.dispose();
-            object.userData.picking.geometry.dispose();
-        }
+    
+        // Traverse the object and dispose of its geometry and material if it has any
+        object.traverse((child) => {
+            if (child.isMesh) {
+                // Check and dispose of geometry
+                if (child.geometry) {
+                    child.geometry.dispose();
+                }
+    
+                // Check and dispose of material
+                if (Array.isArray(child.material)) {
+                    // Dispose each material if it's an array (for multi-material objects)
+                    child.material.forEach((material) => {
+                        if (material) material.dispose();
+                    });
+                } else if (child.material) {
+                    child.material.dispose();
+                }
+    
+                // If the child has a picking object associated, dispose of that too
+                if (child.userData.picking) {
+                    this.pickingScene.remove(child.userData.picking);
+    
+                    if (child.userData.picking.material) {
+                        child.userData.picking.material.dispose();
+                    }
+    
+                    if (child.userData.picking.geometry) {
+                        child.userData.picking.geometry.dispose();
+                    }
+                }
+            }
+        });
     }
+   
     addToScene(object) { //add to scene directly
         this.scene.add(object);
     }

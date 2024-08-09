@@ -12,7 +12,8 @@ let fontMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 let loadMaterial = new THREE.MeshStandardMaterial({ color: 0xcc0000, side: THREE.DoubleSide });
 
 class CustomArrow {
-    constructor(startPoint, direction, length, shaftRadius = 0.015, headRadius = 0.025) {
+    constructor(nodeId,startPoint, direction, length, shaftRadius = 0.015, headRadius = 0.025) {
+        this.nodeId = nodeId;
         this.startPoint = startPoint;
         this.direction = direction.normalize();
         this.length = length;
@@ -146,7 +147,8 @@ class LineLoad extends Load {
 
 let direction = new THREE.Vector3(0, -1, 0);
 class PointLoad  {
-    constructor(fx,fy,fz) {
+    constructor(nodeId,fx,fy,fz) {
+        this.nodeId = nodeId;
         this.components = new THREE.Vector3(fx, fz, fy);
     }
     render(position) {
@@ -170,14 +172,14 @@ class PointLoad  {
         let  newPosition = position.add(this.components.clone().normalize().multiplyScalar(-0.1-length));
 
         //let arrow = new THREE.ArrowHelper(this.components.normalize(), position, length, 0xcc00ff);
-        let arrow = new CustomArrow(newPosition, this.components.normalize(), length);
-        let textGeometry = new THREE.TextBufferGeometry(`(${this.components.x},${this.components.y},${this.components.z})`, {
-            font: myFont,
-            size: 0.3,
-            height: 0.01,
-            curveSegments: 3,
-            bevelEnabled: false
-        });
+        let arrow = new CustomArrow(this.nodeId,newPosition, this.components.normalize(), length);
+        // let textGeometry = new THREE.TextBufferGeometry(`(${this.components.x},${this.components.y},${this.components.z})`, {
+        //     font: myFont,
+        //     size: 0.3,
+        //     height: 0.01,
+        //     curveSegments: 3,
+        //     bevelEnabled: false
+        // });
         // let text = new THREE.Mesh(textGeometry, fontMaterial);
         // //text.rotateX(Math.PI);
         // arrow.arrowGroup.add(text);

@@ -4,11 +4,7 @@ let hingeMaterial = new THREE.MeshPhongMaterial({ color: 0x6633ff });
 let hingeGeometry = new THREE.ConeBufferGeometry(0.3, 0.3, 4);
 let id = 0;
 
-class Constraint{
-    constructor(ux,uy,uz){
-        this.free = [ux,uy,uz]; //bool values (true -> free, false -> fixed)
-    }
-}
+
 
 class Node {
     constructor(coordX, coordY, coordZ, support, nodeId) {
