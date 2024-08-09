@@ -280,14 +280,6 @@
                 editor.removeFromGroup(item.userData.element.visual.label, 'labels');
                 // renumber the elements
                 renumberElements(trussElements);
-                // for (var i = 0; i < trussElements.length; i++) {
-                //     let index = trussElements[i].indexOf(item.userData.element);
-                //     if (index > -1) {
-                //         trussElements[i].splice(index, 1);
-                //         break;
-                //     }
-                // }
-                //TODO: renumbering the elements and remove the labels
             }
             else if (item.userData.node instanceof Node) {
                 // check whether any element is connected to the node
@@ -466,36 +458,27 @@
         $('#pointLoadDetails').css('display', 'none');
     }
 
-    window.hideLoads = () => editor.hideGroup('loads'); //Remove loads from the view
-
-    window.showLoads = function () { // Visualize all load in the selected case
-        console.log('show loads');
-        editor.showGroup('loads');
-        console.log(editor);
-        // let pattern = $('#showLoadCase').val();
-        // editor.clearGroup('loads');
-        // let index;
-        // for (let i = 0; i < secondaryBeams.length; i++) { //Show loads on secondary beams
-        //     for (let j = 0; j < secondaryBeams[i].length; j++) {
-        //         index = secondaryBeams[i][j].data.lineLoads.findIndex(l => l.pattern == pattern);
-        //         if (index > -1)
-        //             editor.addToGroup((secondaryBeams[i][j].data.lineLoads[index]).render(secondaryBeams[i][j]), 'loads');
-        //     }
-        // }
-        // for (let i = 0; i < mainBeams.length; i++) {//Show loads on main beams
-        //     for (let j = 0; j < mainBeams[i].length; j++) {
-        //         index = mainBeams[i][j].data.lineLoads.findIndex(l => l.pattern == pattern);
-        //         if (index > -1)
-        //             editor.addToGroup((mainBeams[i][j].data.lineLoads[index]).render(mainBeams[i][j]), 'loads');
-        //     }
-        // }
-        // for (let i = 0; i < nodes.length; i++) {//Show loads on columns
-        //     index = nodes[i].data.pointLoads.findIndex(l => l.pattern == pattern);
-        //     if (index > -1)
-        //         editor.addToGroup((nodes[i].data.pointLoads[index]).render(nodes[i].data.position.clone()), 'loads');
-        // }
+    window.hideLoads = function () { //Hide all loads in the selected case
+        editor.hideGroup('loads');
+        $('#hideLoadIcon').css('display', 'none');
+        $('#showLoadIcon').css('display', 'block');
     }
 
+    window.showLoads = function () { // Visualize all load in the selected case
+        editor.showGroup('loads');
+        $('#showLoadIcon').css('display', 'none');
+        $('#hideLoadIcon').css('display', 'block');
+    }
+    window.showLabels = function () { //Visualize all labels in the selected case
+        editor.showGroup('labels');
+        $('#showLabelIcon').css('display', 'none');
+        $('#hideLabelIcon').css('display', 'block');
+    }
+    window.hideLabels = function () {
+        editor.hideGroup('labels');
+        $('#hideLabelIcon').css('display', 'none');
+        $('#showLabelIcon').css('display', 'block');
+    }
     window.showConstraints = function () { //Visualize all constraints in the selected case
         editor.showGroup('constraints');
         $('#showConstraintIcon').css('display', 'none');
@@ -824,18 +807,27 @@
 
     window.hideDimensions = () => {
         editor.hideGroup('dimensions');
-        editor.hideGroup('grids');
-        editor.hideGroup('labels');
-        $('#hideDimensions').css('display', 'none');
-        $('#showDimensions').css('display', 'block');
+        $('#hideDims').css('display', 'none');
+        $('#showDims').css('display', 'block');
     }
 
     window.showDimensions = () => {
         editor.showGroup('dimensions');
+        $('#showDims').css('display', 'none');
+        $('#hideDims').css('display', 'block');
+    }
+
+    // show and hide grids
+    window.showGrids = () => {
         editor.showGroup('grids');
-        editor.showGroup('labels');
-        $('#showDimensions').css('display', 'none');
-        $('#hideDimensions').css('display', 'block');
+        $('#showGrids').css('display', 'none');
+        $('#hideGrids').css('display', 'block');
+    }
+
+    window.hideGrids = () => {
+        editor.hideGroup('grids');
+        $('#hideGrids').css('display', 'none');
+        $('#showGrids').css('display', 'block');
     }
 
     window.result = () => {

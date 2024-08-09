@@ -167,20 +167,38 @@
                     </div>
                 </section>
                 <section>
-                    <div class="taskbarIconBlock" onclick="hideDimensions()" id="hideDimensions">
+                    <div class="taskbarIconBlock" onclick="visibilitySettings()" id="visibilitySettings">
                         <div class="flaticon-dimension icon">
-                            <div class="taskbarIconLabel">Hide Dimensions</div>
+                            <div class="taskbarIconLabel">visibility Settings</div>
                         </div>
                     </div>
+                     <section class="ddList">
+                        <ul>
+                            <li class="ddListItem" id="showDims" style="display: none" onclick="showDimensions()"> Show Dimensions </li>
+                            <li class="ddListItem" id="hideDims"  onclick="hideDimensions()">Hide Dimensions</li>
+                             <li class="ddListItem" id="showGrids" style="display: none" onclick="showGrids()"> Show Grids </li>
+                            <li class="ddListItem" id="hideGrids"  onclick="hideGrids()">Hide Grids</li>
+                            <li class="ddListItem" id="showLabelIcon" onclick="showLabels()" style="display: none;"> Show Numbers</li>
+                            <li class="ddListItem" id="hideLabelIcon" onclick="hideLabels()"> Hide Numbers</li>
+                            <li class="ddListItem" id="showLoadIcon" onclick="showLoads()" style="display: none;"> Show Forces</li>
+                            <li class="ddListItem" id="hideloadIcon" onclick="hideLoads()"> Hide Forces</li>
+                             <li class="ddListItem" id="showConstraintIcon" onclick="showConstraints()" style="display: none;"> Show Constraints</li>
+                            <li class="ddListItem" id="hideConstraintIcon" onclick="hideConstraints()" > Hide Constraints</li>
+                            @* <li class="ddListItem" id="addNodeBeam"> Add node on beam</li> *@
+                        </ul>
+                    </section>
                 </section>
 
-                <section>
+
+
+
+                @* <section>
                     <div class="taskbarIconBlock" onclick="showDimensions()" id="showDimensions" style="display:none">
                         <div class="flaticon-dimension icon">
                             <div class="taskbarIconLabel">Show Dimensions</div>
                         </div>
                     </div>
-                </section>
+                </section> *@
 
 
                 <section>
@@ -230,7 +248,6 @@
                         <ul>
                             <li class="ddListItem" id="addNodeCoord">Draw node</li>
                             <li class="ddListItem" id="drawElement"> Draw Element </li>
-                            @* <li class="ddListItem" id="addNodeBeam"> Add node on beam</li> *@
                         </ul>
                     </section>
                 </section>
@@ -259,8 +276,7 @@
                             @*<li class="ddListItem" id="floorLoadIcon">Add Floor load </li>*@
                             @* <li class="ddListItem" id="lineLoadIcon"> Add Line load </li> *@
                             <li class="ddListItem" id="pointLoadIcon"> Add Nodal Force</li>
-                            <li class="ddListItem" id="showLoadIcon" onclick="showLoads()"> Show Forces</li>
-                            <li class="ddListItem" id="hideloadIcon" onclick="hideLoads()"> Hide Forces</li>
+                            
                         </ul>
                     </section>
                 </section>
@@ -277,8 +293,7 @@
                             @*<li class="ddListItem" id="floorLoadIcon">Add Floor load </li>*@
                             @* <li class="ddListItem" id="lineLoadIcon"> Add Line load </li> *@
                             <li class="ddListItem" id="constraintIcon"> Add Constraint</li>
-                            <li class="ddListItem" id="showConstraintIcon" onclick="showConstraints()" style="display: none;"> Show Constraints</li>
-                            <li class="ddListItem" id="hideConstraintIcon" onclick="hideConstraints()" > Hide Constraints</li>
+                           
                         </ul>
                     </section>
                 </section>
