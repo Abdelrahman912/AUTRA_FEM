@@ -479,6 +479,42 @@
         // }
     }
 
+    window.showConstraints = function () { //Visualize all constraints in the selected case
+        editor.showGroup('constraints');
+        $('#showConstraintIcon').css('display', 'none');
+        $('#hideConstraintIcon').css('display', 'block');
+    }
+    window.hideConstraints = function () {
+        editor.hideGroup('constraints');
+        $('#hideConstraintIcon').css('display', 'none');
+        $('#showConstraintIcon').css('display', 'block');
+    }
+
+    window.endConstraint = function () {
+        $('#constraintsDetails').css('display', 'none');
+    }
+
+    window.addConstraint = function () {
+        //get node id
+        let nodeId = $('#constraintNodeId').val();
+        //get the crosponding node
+        let node = nodes.find(n => n.data.$id === nodeId);
+        //check if the node exists
+        if (!node) {
+            showInfoModal('Node not found');
+            return;
+        }
+        //  get constraint values (i.e. ux, uy, uz)
+        // value is string (Free -> true, Fixed -> false)
+        // get string value and convert it to boolean
+        let ux = $('#ux').val() === 'Free' ? true : false;
+        let uy = $('#uy').val() === 'Free' ? true : false;
+        let uz = $('#uz').val() === 'Free' ? true : false;
+        // create constraint object
+        let constraint = new Constraint(ux, uy, uz);
+        console.log(constraint);
+    }
+
     window.changeSection = function () {
         let sectionName = $('#section').val();
         let existingSection = sections.find(s => s.name == sectionName);//Check if the section already exists

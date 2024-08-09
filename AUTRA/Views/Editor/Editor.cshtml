@@ -264,6 +264,26 @@
                         </ul>
                     </section>
                 </section>
+                
+
+                <section>
+                    <div class="taskbarIconBlock">
+                        <div class="flaticon-drawing icon">
+                            <div class="taskbarIconLabel">Constraints</div>
+                        </div>
+                    </div>
+                    <section class="ddList">
+                        <ul>
+                            @*<li class="ddListItem" id="floorLoadIcon">Add Floor load </li>*@
+                            @* <li class="ddListItem" id="lineLoadIcon"> Add Line load </li> *@
+                            <li class="ddListItem" id="constraintIcon"> Add Constraint</li>
+                            <li class="ddListItem" id="showConstraintIcon" onclick="showConstraints()" style="display: none;"> Show Constraints</li>
+                            <li class="ddListItem" id="hideConstraintIcon" onclick="hideConstraints()" > Hide Constraints</li>
+                        </ul>
+                    </section>
+                </section>
+
+
                 <section>
                     <div class="taskbarIconBlock" onclick="save()">
                         <div class="flaticon-floppy-disk icon">
@@ -582,6 +602,56 @@
                 <div class="buttonContainer" style="text-align: center;">
                     <button class="myBtn" onclick="addPointLoad()">Add</button>
                     <button class="myBtn" onclick="endPointLoad()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        @*Constraint Section*@
+        <div id="constraintsDetails" class="popupDiv large2DivSize" style="padding-top: 5px;">
+            <div class="innerDiv">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: right; width: 100%;">Add Constraint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Node Id &nbsp;</td>
+                            <td><input type="text" id="constraintNodeId" size="5"></td>
+                        <tr>
+                            <td>Ux &nbsp;</td>
+                            <td>
+                                <select id="ux">
+                                    <option value="Free">Free</option>
+                                    <option value="Fixed">Fixed</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Uy &nbsp;</td>
+                             <td>
+                                <select id="ux">
+                                    <option value="Free">Free</option>
+                                    <option value="Fixed">Fixed</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Uz &nbsp;</td>
+                             <td>
+                                <select id="ux">
+                                    <option value="Free">Free</option>
+                                    <option value="Fixed">Fixed</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <div class="buttonContainer" style="text-align: center;">
+                    <button class="myBtn" onclick="addConstraint()">Add</button>
+                    <button class="myBtn" onclick="endConstraint()">Close</button>
                 </div>
             </div>
         </div>

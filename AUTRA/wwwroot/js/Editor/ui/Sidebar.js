@@ -15,7 +15,9 @@ function flipDiv(id) {
     $(id).addClass("activeDiv");
     $(id).fadeIn();
 }
-
+$('#constraintIcon').click(function () {
+    flipDiv('#constraintsDetails');
+});
 //#region Show and hide option divs
 $('#drawElement').click(function () {
     flipDiv('#drawElementDetails');
