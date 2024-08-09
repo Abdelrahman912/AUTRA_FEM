@@ -7,10 +7,10 @@ let id = 0;
 class Node {
     constructor(coordX, coordY, coordZ, support, nodeId) {
         this.data = {};
-        this.data.$id = nodeId; //Metadata for JSON Referencing(to reference nodes in beams)
-        this.data.support = support ?? 0;
+        this.data.id = nodeId; //Metadata for JSON Referencing(to reference nodes in beams)
+        //this.data.support = support ?? 0;
         this.data.position = new THREE.Vector3(coordX, coordY, coordZ);  //TODO : Switch Y & Z?!	
-        this.data.pointLoads = [];
+        //this.data.pointLoads = [];
         this.data.force = new THREE.Vector3(0, 0, 0);
         this.data.constraint = new Constraint(true,true,true);
         this.visual = {};
@@ -24,7 +24,7 @@ class Node {
             //cast shadow
             this.visual.mesh.castShadow = true;
             this.visual.mesh.receiveShadow = true;
-            
+
         }
         this.visual.mesh.userData.node = this;
     }
@@ -66,7 +66,7 @@ class Node {
         editor.addToGroup(node.visual.mesh, 'nodes');
         editor.createPickingObject(node);
         // add text to denote node id
-        let textGeometry = new THREE.TextBufferGeometry(`${node.data.$id}`, {
+        let textGeometry = new THREE.TextBufferGeometry(`${node.data.id}`, {
             font: myFont,
             size: 0.2,
             height: 0,
@@ -82,7 +82,7 @@ class Node {
     }
     static generate(nodes, modelNodes, editor) {
         for (let i = 0; i < modelNodes.length; i++) {
-            let node = Node.create(modelNodes[i].position.x, modelNodes[i].position.y, modelNodes[i].position.z, modelNodes[i].support, editor, nodes, modelNodes[i].$id);
+            let node = Node.create(modelNodes[i].position.x, modelNodes[i].position.y, modelNodes[i].position.z, modelNodes[i].support, editor, nodes, modelNodes[i].id);
             for (let j = 0; j < modelNodes[i].pointLoads.length; j++) {
                 node.addPointLoad(new PointLoad(modelNodes[i].pointLoads[j].magnitude, modelNodes[i].pointLoads[j].pattern))
             }
@@ -117,9 +117,9 @@ function createNodes(editor, coordX,coordY, coordZ) {
 // Renumber nodes after deleting some
 function renumberNodes(nodes) {
     for (let i = 0; i < nodes.length; i++) {
-        nodes[i].data.$id = `${i + 1}`;
+        nodes[i].data.id = `${i + 1}`;
         nodes[i].visual.label.geometry.dispose();
-        nodes[i].visual.label.geometry = new THREE.TextBufferGeometry(`${nodes[i].data.$id}`, {
+        nodes[i].visual.label.geometry = new THREE.TextBufferGeometry(`${nodes[i].data.id}`, {
             font: myFont,
             size: 0.2,
             height: 0,
@@ -133,20 +133,20 @@ function removeNodeBoundaryConditions(editor, node) {
     // Remove the support visual
     if(!node.data.constraint.isAllFree()){
         // get the visual from visualObjects
-        let constraintViz = editor.visualObjects.Constraints.find(v => v.nodeId == node.data.$id);
+        let constraintViz = editor.visualObjects.Constraints.find(v => v.nodeId == node.data.id);
         // remove the visual from the scene
         editor.removeFromGroup(constraintViz.group, 'constraints');
         // remove the visual from visualObjects
-        editor.visualObjects.Constraints = editor.visualObjects.Constraints.filter(v => v.nodeId != node.data.$id);
+        editor.visualObjects.Constraints = editor.visualObjects.Constraints.filter(v => v.nodeId != node.data.id);
     }
     // Remove the nodal force if exists
     if (node.data.force.length() > 0) {
         // get the visual from visualObjects
-        let forceViz = editor.visualObjects.Loads.find(v => v.nodeId == node.data.$id);
+        let forceViz = editor.visualObjects.Loads.find(v => v.nodeId == node.data.id);
         // remove the visual from the scene
         editor.removeFromGroup(forceViz.arrowGroup, 'loads');
         // remove the visual from visualObjects
-        editor.visualObjects.Loads = editor.visualObjects.Loads.filter(v => v.nodeId != node.data.$id);
+        editor.visualObjects.Loads = editor.visualObjects.Loads.filter(v => v.nodeId != node.data.id);
     }
     
 }

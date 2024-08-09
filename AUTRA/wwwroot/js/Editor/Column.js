@@ -17,7 +17,7 @@
 
 //         let shape = new shapes[display]();        
 //         for (let i = 0; i < stations.length; i++) {
-//             shape.lineTo(stations[i].x, stations[i].no * scale);
+//             shape.lineTo(stations[i].x, stationss[i].no * scale);
 //         }
 //         shape.lineTo(this.data.length, 0);
 

@@ -202,7 +202,7 @@
 //             //Craete a start node for this line
 //             m++;
 //             node2 = Node.create(coordX[0], coordY, coordZ[i], null, editor, secBeamsNodes);
-//             mainBeams[(i - m)].data.innerNodes.push({ "$ref": node2.data.$id });
+//             mainBeams[(i - m)].data.innerNodes.push({ "$ref": node2.data.id });
 //             createNode = true;
 //         }
 //         else {
@@ -219,7 +219,7 @@
 //                 beam = new Beam(section, node1.data.position.clone(), node2.data.position.clone(),
 //                     shape, lineMaterial.clone(), meshMaterial.clone(), node1, node2);
 
-//                 mainBeams[((coordZToCheck.length - 1) * (j + 1)) + (i - m)].data.innerNodes.push({ "$ref": node2.data.$id });
+//                 mainBeams[((coordZToCheck.length - 1) * (j + 1)) + (i - m)].data.innerNodes.push({ "$ref": node2.data.id });
 //             }
 //             else {
 //                 beam = new Beam(section, new THREE.Vector3(coordX[j], coordY, coordZ[i]), new THREE.Vector3(coordX[j + 1], coordY, coordZ[i]),
@@ -248,7 +248,7 @@
 //             //Craete a start node for this line
 //             m++;
 //             node2 = Node.create(coordX[i], coordY, coordZ[0], null, editor, secBeamsNodes);
-//             mainBeams[(i - m)].data.innerNodes.push({ "$ref": node2.data.$id });
+//             mainBeams[(i - m)].data.innerNodes.push({ "$ref": node2.data.id });
 //             createNode = true;
 //         }
 //         else {
@@ -265,7 +265,7 @@
 //                 beam = new Beam(section, node1.data.position.clone(), node2.data.position.clone(),
 //                     shape, lineMaterial.clone(), meshMaterial.clone(), node1, node2);
 
-//                 mainBeams[((coordXToCheck.length - 1) * (j + 1)) + (i - m)].data.innerNodes.push({ "$ref": node2.data.$id });
+//                 mainBeams[((coordXToCheck.length - 1) * (j + 1)) + (i - m)].data.innerNodes.push({ "$ref": node2.data.id });
 //             }
 //             else {
 //                 beam = new Beam(section, new THREE.Vector3(coordX[i], coordY, coordZ[j]), new THREE.Vector3(coordX[i], coordY, coordZ[j + 1]),

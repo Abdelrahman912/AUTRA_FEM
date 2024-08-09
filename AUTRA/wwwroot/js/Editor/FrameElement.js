@@ -54,8 +54,8 @@ class ElementData { //Data required for analysis and design
         this.elementId = ++ElementData.elementId; 
         this.E = E; //Young's Modulus
         this.A = A; //Cross Sectional Area
-        this.startNode = startNode; /*? { "$ref": startNode.data.$id } : null; // Reference to node in JSON scheme*/
-        this.endNode = endNode;  /*?{ "$ref": endNode.data.$id } : null; // Reference to node in JSON scheme*/
+        this.startNode = startNode; /*? { "$ref": startNode.data.id } : null; // Reference to node in JSON scheme*/
+        this.endNode = endNode;  /*?{ "$ref": endNode.data.id } : null; // Reference to node in JSON scheme*/
         //this.lineLoads = [];
         this.length = parseFloat((startPoint.distanceTo(endPoint)).toPrecision(4));
     }

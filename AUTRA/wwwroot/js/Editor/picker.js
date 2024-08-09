@@ -114,13 +114,13 @@ class GPUPickHelper {
                     $('#beamId').val(element.data.elementId);
                     $('#area').val(element.data.A);
                     $('#modulusE').val(element.data.E);  
-                    $('#beamStart').val(`${element.data.startNode.data.$id}(${element.data.startNode.data.position.x},${element.data.startNode.data.position.z},${element.data.startNode.data.position.y})`);
-                    $('#beamEnd').val(`${element.data.endNode.data.$id}(${element.data.endNode.data.position.x},${element.data.endNode.data.position.z},${element.data.endNode.data.position.y})`);
+                    $('#beamStart').val(`${element.data.startNode.data.id}(${element.data.startNode.data.position.x},${element.data.startNode.data.position.z},${element.data.startNode.data.position.y})`);
+                    $('#beamEnd').val(`${element.data.endNode.data.id}(${element.data.endNode.data.position.x},${element.data.endNode.data.position.z},${element.data.endNode.data.position.y})`);
                 } else if (object.userData.node) {
                     $('#elementData').css('display', 'none');
                     $('#nodeData').css('display', 'block');
                     let node = object.userData.node;
-                    $('#nodeId').val(node.data.$id);
+                    $('#nodeId').val(node.data.id);
                     $('#nodePosition').val(`${node.data.position.x},${node.data.position.z},${node.data.position.y}`);
                     $('#nodeLoad').val(`${node.data.force.x},${node.data.force.y},${node.data.force.z}`);
                     let constraint = node.data.constraint;
