@@ -1,4 +1,5 @@
 let lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+let elementFontMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 let zVector = new THREE.Vector3(0, 0, 1);
 function SectionDimensions(depth) { //Calculate the dimensions relative to it depth
     this.clearHeight = depth || 0.5;
@@ -53,8 +54,8 @@ class ElementData { //Data required for analysis and design
         this.elementId = ++ElementData.elementId; 
         this.E = E; //Young's Modulus
         this.A = A; //Cross Sectional Area
-        this.startNode = startNode ? { "$ref": startNode.data.$id } : null; // Reference to node in JSON scheme
-        this.endNode = endNode ? { "$ref": endNode.data.$id } : null; // Reference to node in JSON scheme
+        this.startNode = startNode; /*? { "$ref": startNode.data.$id } : null; // Reference to node in JSON scheme*/
+        this.endNode = endNode;  /*?{ "$ref": endNode.data.$id } : null; // Reference to node in JSON scheme*/
         //this.lineLoads = [];
         this.length = parseFloat((startPoint.distanceTo(endPoint)).toPrecision(4));
     }
@@ -140,6 +141,9 @@ function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNod
     let direction = (EndPoint.clone().sub(startPoint)).normalize();
     let rotation = new THREE.Euler(-1 * direction.angleTo(zVector), 0, 0);
     element =  new FrameElement(E,A, startPoint, EndPoint, lineMaterial.clone(), startNode, EndNode, direction, rotation);
+    console.log(element);
+    console.log(startNode);
+    console.log(EndNode);
     editor.addToGroup(element.visual.mesh, 'elements');
     editor.createPickingObject(element);
     // add textto denote element id
@@ -150,9 +154,26 @@ function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNod
         curveSegments: 3,
         bevelEnabled: false
     });
-    let text = new THREE.Mesh(textGeometry, fontMaterial);
+    let text = new THREE.Mesh(textGeometry, elementFontMaterial);
     text.position.copy(startPoint.clone().add(EndPoint).multiplyScalar(0.5));
     text.position.y += 0.1;
     editor.addToGroup(text, 'labels');
+    element.visual.label = text;
     return element;
+}
+
+// Renumber the elements
+function renumberElements(elements) {
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].data.elementId = i + 1;
+        // update the text
+        elements[i].visual.label.geometry.dispose();
+        elements[i].visual.label.geometry = new THREE.TextBufferGeometry(`${elements[i].data.elementId}`, {
+            font: myFont,
+            size: 0.2,
+            height: 0,
+            curveSegments: 3,
+            bevelEnabled: false
+        });
+    }
 }

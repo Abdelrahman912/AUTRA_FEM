@@ -85,7 +85,7 @@
                 //creating and adding the Hinged-Nodes to MainNodes Array
                 let nodesResult = createNodes(editor, coordX, levels, coordZ);
                 nodes= nodes.concat( nodesResult);
-                createNodeLabels(editor, nodes);
+                //createNodeLabels(editor, nodes);
                 //for (let i = 1; i < levels.length; i++) {
 
                 //    [mainBeamsLoop, secondaryBeamsLoop, mainNodesLoop, secNodesLoop, secSpacings] = generateMainBeamsX(editor, coordX, levels[i], coordZ,
@@ -270,41 +270,41 @@
 
     window.deleteElement = function () {
         for (let item of editor.picker.selectedObject) {
-            if (item.userData.element instanceof Beam) {
+           
+            if (item.userData.element instanceof FrameElement) {
                 editor.removeFromGroup(item, 'elements');
-                let found = false;
-                for (var i = 0; i < secondaryBeams.length; i++) { //Search for the beam in secondary beams
-                    index = secondaryBeams[i].indexOf(item.userData.element);
-                    if (index > -1) {
-                        secondaryBeams[i].splice(index, 1);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    for (var i = 0; i < mainBeams.length; i++) { //Search for the beam in main beams(if not found in secondary)
-                        let index = mainBeams[i].indexOf(item.userData.element);
-                        if (index > -1) {
-                            mainBeams[i].splice(index, 1);
-                            break;
-                        }
-                    }
-                }
+                trussElements = trussElements.filter(e => e.data.elementId !== item.userData.element.data.elementId);
+                console.log("trussElements after deletion");
+                console.log(trussElements);
+                // remove element label from the scene
+                editor.removeFromGroup(item.userData.element.visual.label, 'labels');
+                // renumber the elements
+                renumberElements(trussElements);
+                // for (var i = 0; i < trussElements.length; i++) {
+                //     let index = trussElements[i].indexOf(item.userData.element);
+                //     if (index > -1) {
+                //         trussElements[i].splice(index, 1);
+                //         break;
+                //     }
+                // }
+                //TODO: renumbering the elements and remove the labels
             }
-            else if (item.userData.element instanceof Column) {//Search for the column in columns
-                editor.removeFromGroup(item, 'elements');
-                for (var i = 0; i < columns.length; i++) {
-                    let index = columns[i].indexOf(item.userData.element);
-                    if (index > -1) {
-                        columns[i].splice(index, 1);
-                        break;
-                    }
+            else if (item.userData.node instanceof Node) {
+                // check whether any element is connected to the node
+                // if connected, prevent deletion and show a message
+                // if not connected, delete the node
+                let exisitingEles = trussElements.find(e => e.data.startNode.data.$id === item.userData.node.data.$id || e.data.endNode.data.$id === item.userData.node.data.$id);
+                if (exisitingEles) {
+                    showInfoModal('Node is connected to an element, please delete the element first');
+                    return;
                 }
-            }
-            else {
                 editor.removeFromGroup(item, 'nodes');
                 let index = nodes.indexOf(item.userData.node)
                 nodes.splice(index, 1);
+                let text = item.userData.node.visual.label;
+                editor.removeFromGroup(text, 'labels');
+                renumberNodes(nodes);
+                removeNodeBoundaryConditions(editor, item.userData.node);
             }
         }
         editor.picker.selectedObject.clear();
@@ -648,6 +648,8 @@
         // get direction
         let element = createFrameElement(editor,modulusOfElasticity,crossSectionArea,startPosition, endPosition, startNode, endNode);
         trussElements.push(element);
+        console.log("Add element to truss elements");
+        console.log(trussElements);
     }
     window.endDrawMode = () => {
         //  hide this div drawElementDetails

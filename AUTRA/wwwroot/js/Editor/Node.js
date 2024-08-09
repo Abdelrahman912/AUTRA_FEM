@@ -21,6 +21,10 @@ class Node {
         else {
             this.visual.mesh = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
             this.visual.mesh.position.set(coordX, coordY, coordZ);
+            //cast shadow
+            this.visual.mesh.castShadow = true;
+            this.visual.mesh.receiveShadow = true;
+            
         }
         this.visual.mesh.userData.node = this;
     }
@@ -61,6 +65,19 @@ class Node {
         nodes.push(node);
         editor.addToGroup(node.visual.mesh, 'nodes');
         editor.createPickingObject(node);
+        // add text to denote node id
+        let textGeometry = new THREE.TextBufferGeometry(`${node.data.$id}`, {
+            font: myFont,
+            size: 0.2,
+            height: 0,
+            curveSegments: 3,
+            bevelEnabled: false
+        });
+        let text = new THREE.Mesh(textGeometry, fontMaterial);
+        text.position.copy(node.data.position);
+        text.position.y += 0.2;
+        editor.addToGroup(text, 'labels');
+        node.visual.label = text;
         return node;
     }
     static generate(nodes, modelNodes, editor) {
@@ -97,23 +114,40 @@ function createNodes(editor, coordX,coordY, coordZ) {
     return nodes;
 }
 
-// Create Text denoting the nodes number
-function createNodeLabels(editor, nodes) {
-    let nodeNumbers = new THREE.Group();
+// Renumber nodes after deleting some
+function renumberNodes(nodes) {
     for (let i = 0; i < nodes.length; i++) {
-        let textGeometry = new THREE.TextBufferGeometry(`${nodes[i].data.$id}`, {
+        nodes[i].data.$id = `${i + 1}`;
+        nodes[i].visual.label.geometry.dispose();
+        nodes[i].visual.label.geometry = new THREE.TextBufferGeometry(`${nodes[i].data.$id}`, {
             font: myFont,
             size: 0.2,
             height: 0,
             curveSegments: 3,
             bevelEnabled: false
         });
-        let text = new THREE.Mesh(textGeometry, fontMaterial);
-        text.position.set(nodes[i].data.position.x, nodes[i].data.position.y + 0.2 , nodes[i].data.position.z);
-        nodeNumbers.add(text);
     }
-    editor.addToGroup(nodeNumbers, 'labels');
-    return nodeNumbers;
-    //TODO: Rotate text with camera
+}
+
+function removeNodeBoundaryConditions(editor, node) {
+    // Remove the support visual
+    if(!node.data.constraint.isAllFree()){
+        // get the visual from visualObjects
+        let constraintViz = editor.visualObjects.Constraints.find(v => v.nodeId == node.data.$id);
+        // remove the visual from the scene
+        editor.removeFromGroup(constraintViz.group, 'constraints');
+        // remove the visual from visualObjects
+        editor.visualObjects.Constraints = editor.visualObjects.Constraints.filter(v => v.nodeId != node.data.$id);
+    }
+    // Remove the nodal force if exists
+    if (node.data.force.length() > 0) {
+        // get the visual from visualObjects
+        let forceViz = editor.visualObjects.Loads.find(v => v.nodeId == node.data.$id);
+        // remove the visual from the scene
+        editor.removeFromGroup(forceViz.arrowGroup, 'loads');
+        // remove the visual from visualObjects
+        editor.visualObjects.Loads = editor.visualObjects.Loads.filter(v => v.nodeId != node.data.$id);
+    }
+    
 }
 
