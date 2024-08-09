@@ -114,9 +114,8 @@ class GPUPickHelper {
                     $('#beamId').val(element.data.elementId);
                     $('#area').val(element.data.A);
                     $('#modulusE').val(element.data.E);  
-                    console.log(element.data.E);
-                    $('#beamStart').val(`${object.position.x},${object.position.z},${object.position.y}`);
-                    $('#beamEnd').val(`${element.visual.endPoint.x},${element.visual.endPoint.z},${element.visual.endPoint.y}`);
+                    $('#beamStart').val(`${element.data.startNode.$ref}(${element.visual.startPoint.x},${element.visual.startPoint.z},${element.visual.startPoint.y})`);
+                    $('#beamEnd').val(`${element.data.endNode.$ref}(${element.visual.endPoint.x},${element.visual.endPoint.z},${element.visual.endPoint.y})`);
                 } else if (object.userData.node) {
                     $('#elementData').css('display', 'none');
                     $('#nodeData').css('display', 'block');

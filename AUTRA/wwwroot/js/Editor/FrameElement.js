@@ -71,6 +71,7 @@ class ElementVisual { // Visual data for editor
         //this.unusedMesh.userData = this.mesh.userData; //to save the same data at toggle view
         //this.temp = null;                              //Used to Swap Meshes at tougle view
         this.endPoint = endPoint;
+        this.startPoint = startPoint;
         //this.sectionName = sectionName;
     }
 }
@@ -141,5 +142,17 @@ function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNod
     element =  new FrameElement(E,A, startPoint, EndPoint, lineMaterial, startNode, EndNode, direction, rotation);
     editor.addToGroup(element.visual.mesh, 'elements');
     editor.createPickingObject(element);
+    // add textto denote element id
+    let textGeometry = new THREE.TextBufferGeometry(`${element.data.elementId}`, {
+        font: myFont,
+        size: 0.2,
+        height: 0,
+        curveSegments: 3,
+        bevelEnabled: false
+    });
+    let text = new THREE.Mesh(textGeometry, fontMaterial);
+    text.position.copy(startPoint.clone().add(EndPoint).multiplyScalar(0.5));
+    text.position.y += 0.1;
+    editor.addToGroup(text, 'labels');
     return element;
 }
