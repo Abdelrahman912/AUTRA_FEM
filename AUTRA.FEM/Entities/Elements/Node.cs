@@ -12,8 +12,8 @@ namespace AUTRA.FEM.Entities.Elements
     {
         public int Id { get;}
         public Vector3D Position { get; }
-        public Constraint Constraint { get; }
-        public NodalForce NodalForce { get; }
+        public Constraint Constraint { get; } //Dirichilet boundary condition
+        public NodalForce NodalForce { get; } //Neumann boundary condition
         public Node(int id, double x1, double x2, double x3, Constraint constraint, NodalForce force)
         {
             Id = id;

@@ -648,15 +648,15 @@
         console.log("Creating model");
         let model = {
             nodes: [], 
-            //trussElements: [], 
+            trussElements: [], 
         };
         //model.projectProperties = projectProperties;
         for (var i = 0; i < nodes.length; i++) {
             model.nodes.push(nodes[i].data);
         }
-        //for (var i = 0; i < trussElements.length; i++) {
-        //    model.trussElements.push(trussElements[i].data);
-        //}
+        for (var i = 0; i < trussElements.length; i++) {
+            model.trussElements.push(trussElements[i].data);
+        }
         // model.grids.cxs = grids.cxs; //For Tekla
         // model.grids.cys = grids.cys; //For Tekla
         // model.grids.coordX = grids.coordX; //For model re-openning
