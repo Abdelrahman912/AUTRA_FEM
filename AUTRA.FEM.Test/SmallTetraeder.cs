@@ -1,6 +1,8 @@
 ﻿using AUTRA.FEM.Entities.BoundaryConditions;
 using AUTRA.FEM.Entities.Elements;
 using AUTRA.FEM.Entities.Structures;
+using System;
+using System.Collections.Generic;
 
 namespace AUTRA.FEM.Test
 {

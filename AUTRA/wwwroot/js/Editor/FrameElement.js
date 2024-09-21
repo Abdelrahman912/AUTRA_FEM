@@ -153,7 +153,11 @@ class FrameElement {
 
 function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNode){
     let direction = (EndPoint.clone().sub(startPoint)).normalize();
-    let rotation = new THREE.Euler(-1 * direction.angleTo(zVector), 0, 0);
+    // Compute quaternion rotation to align the element's direction with the calculated direction
+    let quaternion = new THREE.Quaternion().setFromUnitVectors(zVector, direction);
+
+    // Convert quaternion to Euler rotation
+    let rotation = new THREE.Euler().setFromQuaternion(quaternion);
     element =  new FrameElement(E,A, startPoint, EndPoint, lineMaterial.clone(), startNode, EndNode, direction, rotation);
     console.log(element);
     console.log(startNode);

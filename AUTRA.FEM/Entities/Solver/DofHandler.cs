@@ -1,6 +1,10 @@
 ﻿using AUTRA.FEM.Entities.Elements;
 using AUTRA.FEM.Entities.Geometries;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Complex;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AUTRA.FEM.Entities.Solver
 {

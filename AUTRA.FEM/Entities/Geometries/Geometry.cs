@@ -1,4 +1,6 @@
 ﻿using AUTRA.FEM.Entities.Elements;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AUTRA.FEM.Entities.Geometries
 {

@@ -3,6 +3,7 @@ using AUTRA.FEM.Entities.Geometries;
 using AUTRA.FEM.Entities.Solver;
 using MathNet.Numerics.LinearAlgebra;
 using AUTRA.FEM.Entities.Results;
+using System.Collections.Generic;
 
 namespace AUTRA.FEM.Entities.Structures
 {
