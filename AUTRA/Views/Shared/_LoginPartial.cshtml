@@ -5,8 +5,17 @@
     <ul class="navbar-nav">
         @if (SignInManager.IsSignedIn(User))
         {
+
             <li class="nav-item">
                 <a class="nav-link text-light" asp-area="" asp-action="New" asp-controller="Editor" title="Manage" style="padding-right:15px;">Start Project</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding-right:15px;">
+                    Examples
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" id="smallTetraeder"  asp-area="" asp-action="SmallTetraeder" asp-controller="Editor">Small Tetraeder</a></li>
+                </ul>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-light" asp-area="" asp-action="Myprojects" asp-controller="Editor" title="Manage">My Projects</a>

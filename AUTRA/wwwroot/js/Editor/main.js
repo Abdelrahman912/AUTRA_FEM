@@ -1,6 +1,8 @@
 //https://threejsfundamentals.org/threejs/lessons/threejs-picking.html
 
 (function () {
+    let exampleId = parseInt($('#exampleId').val());
+
     //#region  Shared variables
     let editor;
     let nodes = new Array(), grids;
@@ -12,12 +14,105 @@
     let boundingLength = 10; // initial value, change once grids are made.
     //#endregion
 
+    function smallTetraeder() {
+
+        coordX = [-7.5, 0, 7.5];
+        coordZ = [-4.33,0,8.66];
+        levels = [0, 12.25]
+        setMaxLength(coordX, coordZ, levels);
+        grids = new Grid(coordX, coordZ, 4.5, levels);
+        editor.init(coordX[coordX.length - 1], coordZ[coordZ.length - 1]); //Setup editor
+        editor.addToGroup(grids.gridLines, 'grids'); //Add x-grids to scene (as a group)this.meshInX
+        editor.addToGroup(grids.gridNames, 'grids'); //Add z-grids to scene (as a group)
+        editor.addToGroup(grids.axes, 'axes');
+        editor.addToGroup(grids.dimensions, 'dimensions');
+
+        let lb = 15.0;
+        let r = 457.2 / 2000;
+        let t = 10.0 / 1000;
+        let a = Math.PI * (r * r - (r - t) * (r - t));
+        let e = 210000000000;
+
+        let n1 = Node.create(0, lb * Math.sqrt(2.0 / 3.0), 0, null, editor, nodes);
+        let n2 = Node.create(0.0, 0, lb / Math.sqrt(3), null, editor, nodes);
+        let n3 = Node.create(-lb / 2, 0, -lb / Math.sqrt(12.0), null, editor, nodes);
+        let n4 = Node.create(lb / 2, 0, -lb / Math.sqrt(12.0), null, editor, nodes);
+
+
+
+      
+        let e1 = createFrameElement(editor, e, a, n1.data.position, n2.data.position, n1, n2);
+        trussElements.push(e1);
+
+        let e2 = createFrameElement(editor, e, a, n1.data.position, n3.data.position, n1, n3);
+        trussElements.push(e2);
+
+        let e3 = createFrameElement(editor, e, a, n1.data.position, n4.data.position, n1, n4);
+        trussElements.push(e3);
+
+        let e4 = createFrameElement(editor, e, a, n2.data.position, n3.data.position, n2, n3);
+        trussElements.push(e4);
+
+        let e5 = createFrameElement(editor, e, a, n3.data.position, n4.data.position, n3, n4);
+        trussElements.push(e5);
+
+        let e6 = createFrameElement(editor, e, a, n4.data.position, n2.data.position, n4, n2);
+        trussElements.push(e6);
+
+
+
+
+        // constraints 
+        let c2 = new Constraint(false, false, false);
+        n2.data.constraint = c2;
+        let c2Viz = new ConstraintViz(n2.data.id, n2.data.position.clone(), false, false, false);
+        editor.visualObjects.Constraints.push(c2Viz);
+        editor.addToGroup(c2Viz.group, 'constraints');
+
+
+        let c3 = new Constraint(false, false, false);
+        let c3Viz = new ConstraintViz(n3.data.id, n3.data.position.clone(), false, false, false);
+        editor.visualObjects.Constraints.push(c3Viz);
+        editor.addToGroup(c3Viz.group, 'constraints');
+
+
+        let c4 = new Constraint(true, true, false);
+        n4.data.constraint = c4;
+        let c4Viz = new ConstraintViz(n4.data.id, n4.data.position.clone(), true, true, false);
+        editor.visualObjects.Constraints.push(c4Viz);
+        editor.addToGroup(c4Viz.group, 'constraints');
+
+
+        // Add Nodal Loads
+        let fx = 0;
+        let fy = -20000;
+        let fz = -100000;
+        let f1 = new THREE.Vector3(fx, fy, fz);
+        n1.data.force = f1;
+        let pointLoad = new PointLoad(nodeId, fx, fy, fz);
+        //let loadIndex = node.addLoad(pointLoad, replace);
+        // add arrowgroup to visualObjects
+        let arrow = pointLoad.render(n1.data.position.clone(), boundingLength);
+        editor.visualObjects.Loads.push(arrow);
+        editor.addToGroup(arrow.arrowGroup, 'loads');
+
+    }
+
+
     function init() {
         editor = new Editor(); //Instantiate editor
         canvas = editor.renderer.domElement;
         let path = $('#projectName').val();
         $('#projectName').remove();
-        if (path) {
+        if (exampleId > 0) {
+            //showInfoModal('Small Tateraeder');
+            switch (exampleId) {
+                case 1:
+                    smallTetraeder(); //Small Tetraeder example
+                default:
+            }
+        }
+        else if (path) {
             $('#staticBackdrop').modal('show');
             $.ajax({
                 url: `${path}`,
@@ -36,6 +131,9 @@
         else
             $('#modalDivDetails').css('display', 'block');
     }
+
+    
+
     function buildModel(model) {
         editor.init(model.grids.coordX[model.grids.coordX.length - 1], model.grids.coordZ[model.grids.coordZ.length - 1]); //Setup editor
         grids = new Grid(model.grids.coordX, model.grids.coordZ, 4.5, model.grids.levels);
@@ -60,7 +158,7 @@
     }
     function setMaxLength(coordX, coordZ, levels) {
 
-        maxX = coordX[coordX.length - 1 ]
+        maxX = coordX[coordX.length - 1]
         maxZ = coordZ[coordZ.length - 1]
         maxY = levels[levels.length - 1]
         boundingLength = Math.max(maxX, maxZ, maxY);
@@ -78,10 +176,10 @@
             editor.init(coordX[coordX.length - 1], coordZ[coordZ.length - 1]); //Setup editor
             editor.addToGroup(grids.gridLines, 'grids'); //Add x-grids to scene (as a group)this.meshInX
             editor.addToGroup(grids.gridNames, 'grids'); //Add z-grids to scene (as a group)
-            editor.addToGroup(grids.axes, 'axes'); 
+            editor.addToGroup(grids.axes, 'axes');
             editor.addToGroup(grids.dimensions, 'dimensions');
 
-            
+
 
 
             material = { $id: 'm', E: $('#modulus').val() };
@@ -91,7 +189,7 @@
             if (document.getElementById("ns").checked) { //Draw elements and nodes
                 //creating and adding the Hinged-Nodes to MainNodes Array
                 let nodesResult = createNodes(editor, coordX, levels, coordZ);
-                nodes= nodes.concat( nodesResult);
+                nodes = nodes.concat(nodesResult);
                 //createNodeLabels(editor, nodes);
                 //for (let i = 1; i < levels.length; i++) {
 
@@ -139,6 +237,8 @@
             $('#modalDivDetails').show();
         }
     })
+
+   
 
     //Turn spacings into coordinates
     function getCoords(input) {
@@ -225,6 +325,9 @@
         if (event.key === 'Control')
             multiple = true;
     }
+
+   
+
 
     // draw element function
     function drawElement() {
@@ -636,7 +739,7 @@
         // get end node position
         let endPosition = endNode.data.position;
         // get direction
-        let element = createFrameElement(editor,modulusOfElasticity,crossSectionArea,startPosition, endPosition, startNode, endNode);
+        let element = createFrameElement(editor, modulusOfElasticity, crossSectionArea, startPosition, endPosition, startNode, endNode);
         trussElements.push(element);
         console.log("Add element to truss elements");
         console.log(trussElements);

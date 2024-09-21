@@ -29,8 +29,16 @@ namespace AUTRA.Controllers
         }
         public IActionResult New()
         {
+            ViewBag.ExampleId = 0;
             return View("Editor");
         }
+      
+        public IActionResult SmallTetraeder()
+        {
+            ViewBag.ExampleId = 1;
+            return View("Editor");
+        }
+
 
         public IActionResult MyProjects()
         {

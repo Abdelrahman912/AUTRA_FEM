@@ -64,9 +64,8 @@ class CustomArrow {
         this.arrowGroup.add(shaft);
         this.arrowGroup.add(head);
     }
-
-   
 }
+
 
 
 
@@ -153,10 +152,10 @@ class PointLoad  {
     }
     render(position,boundingLength) {
         let length = this.components.length();
-        while (length > boundingLength / 2) {
+        while (length > boundingLength ) {
             length = (length / boundingLength) * 0.2;
         }
-        length = Math.max(length, 0.3);
+        length = Math.max(length, 0.5);
 
         let  newPosition = position.add(this.components.clone().normalize().multiplyScalar(-0.1-length));
 
