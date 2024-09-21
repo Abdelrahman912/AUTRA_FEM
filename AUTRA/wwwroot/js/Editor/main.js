@@ -285,7 +285,7 @@
                 // check whether any element is connected to the node
                 // if connected, prevent deletion and show a message
                 // if not connected, delete the node
-                let exisitingEles = trussElements.find(e => e.data.startNode.data.id === item.userData.node.data.id || e.data.endNode.data.id === item.userData.node.data.id);
+                let exisitingEles = trussElements.find(e => e.data.startNode.data.$id === item.userData.node.data.$id || e.data.endNode.data.$id === item.userData.node.data.$id);
                 if (exisitingEles) {
                     showInfoModal('Node is connected to an element, please delete the element first');
                     return;
@@ -365,7 +365,7 @@
             let beam = editor.getIntersected(newStartNode.data.position.clone());
             if (beam) { //Add the created node to the innerNodes of the beam it intersects(if any)
                 Beam.switchType(beam.userData.element, secondaryBeams[levelIndex], mainBeams[levelIndex]);
-                beam.userData.element.data.innerNodes.push({ '$ref': newStartNode.data.id });
+                beam.userData.element.data.innerNodes.push({ '$ref': newStartNode.data.$id });
             }
         }
 
@@ -374,11 +374,11 @@
             beam = editor.getIntersected(newEndNode.data.position.clone());
             if (beam) {//Add the created node to the innerNodes of the beam it intersects(if any)
                 Beam.switchType(beam.userData.element, secondaryBeams[levelIndex], mainBeams[levelIndex]);
-                beam.userData.element.data.innerNodes.push({ '$ref': newEndNode.data.id });
+                beam.userData.element.data.innerNodes.push({ '$ref': newEndNode.data.$id });
             }
         }
-        element.data.startNode = { "$ref": newStartNode.data.id };
-        element.data.endNode = { "$ref": newEndNode.data.id };
+        element.data.startNode = { "$ref": newStartNode.data.$id };
+        element.data.endNode = { "$ref": newEndNode.data.$id };
     }
 
     window.toggle = () => editor.toggleBeams();//Toggle elements between wireFrame and extruded view
@@ -563,7 +563,7 @@
 
                     createdNode = Node.create(nodePosition.x, nodePosition.y, nodePosition.z,
                         null, editor, nodes);
-                    element.data.innerNodes.push({ $ref: createdNode.data.id });
+                    element.data.innerNodes.push({ $ref: createdNode.data.$id });
                 }
             }
         }
@@ -576,7 +576,7 @@
         let beam = editor.getIntersected(node.data.position.clone()); //Beam mesh
         if (beam && beam.userData.element instanceof Beam) {
             beam = beam.userData.element;
-            beam.data.innerNodes.push({ "$ref": node.data.id }); //Add the node to the beam inner nodes
+            beam.data.innerNodes.push({ "$ref": node.data.$id }); //Add the node to the beam inner nodes
         }
     }
 
@@ -654,14 +654,16 @@
         for (var i = 0; i < nodes.length; i++) {
             model.nodes.push(nodes[i].data);
         }
-        for (var i = 0; i < trussElements.length; i++) {
-            model.trussElements.push(trussElements[i].data);
-        }
+        //for (var i = 0; i < trussElements.length; i++) {
+        //    model.trussElements.push(trussElements[i].data);
+        //}
+        trussElements.forEach(e => model.trussElements.push(elementDataToDto(e.data)));
         // model.grids.cxs = grids.cxs; //For Tekla
         // model.grids.cys = grids.cys; //For Tekla
         // model.grids.coordX = grids.coordX; //For model re-openning
         // model.grids.coordZ = grids.coordZ; //For model re-openning
         // model.grids.levels = grids.levels; //For Tekla & model re-openning
+        console.log("json");
         return JSON.stringify(model);
     }
 

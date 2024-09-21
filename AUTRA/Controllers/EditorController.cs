@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AUTRA.Data;
 using AUTRA.Dtos;
+using AUTRA.FEM.Entities.Structures;
 using AUTRA.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -48,14 +49,16 @@ namespace AUTRA.Controllers
         [HttpPost]
         public string Solve([FromBody] ModelDto model)
         {
-            var eles = model.FrameElements;
            string response = JsonConvert.SerializeObject(new {}, new JsonSerializerSettings
            {
                ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
                Converters = new List<JsonConverter> { new StringEnumConverter(new CamelCaseNamingStrategy()) }
            });
-
-           return response;
+            var nodes = model.Nodes.Select(dto => dto.ToModel()).ToList();
+            var eles = model.TrussElements.Select(dto => dto.ToModel(nodes)).ToList();
+            var truss = new TrussStructure(nodes, eles);
+            var pp = truss.Solve();
+            return response;
         }
 
         [HttpPost]

@@ -62,6 +62,20 @@ class ElementData { //Data required for analysis and design
     static elementId = 0;
 }
 
+
+function elementDataToDto(eleData) {
+    return {
+        elementId: eleData.elementId,
+        E: eleData.E,
+        A: eleData.A,
+        startNodeId: eleData.startNode.data.id,
+        endNodeId: eleData.endNode.data.id,
+        length: eleData.length
+    };
+
+}
+
+
 class ElementVisual { // Visual data for editor
     constructor(startPoint, endPoint,  lineMaterial, direction, rotation) {
         this.direction = direction;

@@ -311,4 +311,9 @@
     <Folder Include="wwwroot\assets\video\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\AUTRA.FEM\AUTRA.FEM.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AUTRA.FEM.Entities.Elements
 {
-    public class LineElement
+    public class LineElement    
     {
         #region Private Fields
         private readonly Lazy<Matrix<double>> _k;
