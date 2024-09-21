@@ -19,7 +19,7 @@ class CustomArrow {
         this.length = length;
         this.shaftRadius = shaftRadius;
         this.headRadius = headRadius;
-        this.headLength = length * 0.2;
+        this.headLength = 0.1;
 
         this.arrowGroup = new THREE.Group();
         this.createArrow();
@@ -151,23 +151,12 @@ class PointLoad  {
         this.nodeId = nodeId;
         this.components = new THREE.Vector3(fx, fz, fy);
     }
-    render(position) {
+    render(position,boundingLength) {
         let length = this.components.length();
-        if(length < 0.1){
-            length = 0.1;
-        }else if (length < 2.5){
-            length *= 0.5;
-        }else if (length > 25){
-            length *= 0.05;
-        }else if (length > 250){
-            length *= 0.005;
-        }else if (length > 2500){
-            length *= 0.0005;
-        }else if (length > 25000){
-            length *= 0.00005;
-        } else {
-            length *= 0.000025;
+        while (length > boundingLength / 2) {
+            length = (length / boundingLength) * 0.2;
         }
+        length = Math.max(length, 0.3);
 
         let  newPosition = position.add(this.components.clone().normalize().multiplyScalar(-0.1-length));
 

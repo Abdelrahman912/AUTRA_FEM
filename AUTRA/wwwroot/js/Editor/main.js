@@ -9,6 +9,7 @@
     let levels, material, projectProperties, loadCombo;
     let draw = false, drawingPoints = [];
     let sectionId = 0;
+    let boundingLength = 10; // initial value, change once grids are made.
     //#endregion
 
     function init() {
@@ -57,7 +58,13 @@
         loadCombo = model.loadCombination;
         confirmCloseWindow();
     }
+    function setMaxLength(coordX, coordZ, levels) {
 
+        maxX = coordX[coordX.length - 1 ]
+        maxZ = coordZ[coordZ.length - 1]
+        maxY = levels[levels.length - 1]
+        boundingLength = Math.max(maxX, maxZ, maxY);
+    }
     $('#createGrids').click(function () {
         if ($("#form2StructureData").valid()) {
             $('#modalDivDetails').hide();
@@ -66,7 +73,7 @@
             coordX = getCoords($('#spaceX').val()); //Get X-coordinates from X-spacings
             coordZ = getCoords($('#spaceZ').val()); //Get Z-coordinates from Z-spacings
             levels = getCoords($('#spaceY').val()); //Get Y-coordinates from Y-spacings
-
+            setMaxLength(coordX, coordZ, levels);
             grids = new Grid(coordX, coordZ, 4.5, levels);
             editor.init(coordX[coordX.length - 1], coordZ[coordZ.length - 1]); //Setup editor
             editor.addToGroup(grids.gridLines, 'grids'); //Add x-grids to scene (as a group)this.meshInX
@@ -447,7 +454,7 @@
             let pointLoad = new PointLoad(nodeId,fx, fy, fz);
             //let loadIndex = node.addLoad(pointLoad, replace);
             // add arrowgroup to visualObjects
-            let arrow = pointLoad.render(node.data.position.clone());
+            let arrow = pointLoad.render(node.data.position.clone(),boundingLength);
             editor.visualObjects.Loads.push(arrow);
             editor.addToGroup(arrow.arrowGroup, 'loads')
         }

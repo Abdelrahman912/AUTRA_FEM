@@ -20,7 +20,7 @@ namespace AUTRA.Dtos
             var forceDto = nodeDto.Force;
             var force = new NodalForce(forceDto.X, forceDto.Y, forceDto.Z);
             var constraint = nodeDto.Constraint.ToModel();
-            var node = new Node(nodeDto.Id, nodeDto.Position.X, nodeDto.Position.Y, nodeDto.Position.Z, constraint, force);
+            var node = new Node(nodeDto.Id, nodeDto.Position.X, nodeDto.Position.Z, nodeDto.Position.Y, constraint, force); // in three js y and z are swapped
             return node;
         }
 
