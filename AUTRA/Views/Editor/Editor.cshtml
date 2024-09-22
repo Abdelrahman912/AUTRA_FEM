@@ -33,6 +33,7 @@
             animation: blink 2s;
             animation-iteration-count: infinite;
         }
+
     </style>
     <title>Editor</title>
 </head>
@@ -320,12 +321,21 @@
                         </div>
                     </div>
                 </section>
+               
                 <section>
                     <div class="taskbarIconBlock " id="analysisResult" style="display:none;">
                         <div class="flaticon-graphs icon">
                             <div class="taskbarIconLabel">Analysis Results</div>
                         </div>
                     </div>
+                    <section class="ddList">
+                        <ul>
+                            <li class="ddListItem" onclick="showDeformedShape()" id="showDeformedShape">Show Deformed Shape </li>
+                             <li class="ddListItem" onclick="showElementForces()" id="showEleForce"> Show Element Forces </li> 
+                            <li class="ddListItem" onclick="showUndeformedShape()" id="showUndeformedShape"> Show Undeformed Shape</li>
+
+                        </ul>
+                    </section>
                 </section>
                 <section>
                     <div class="taskbarIconBlock " id="generateDrawings" style="display:none;"
@@ -704,78 +714,61 @@
             </div>
         </div> *@
 
-        <div id="analysisResultDetails" class="popupDiv largeDivSize">
+        <div id="deformedShapeDetails" class="popupDiv narrowLongDivSize" style="margin: 20px;">
             <div class="innerDiv">
-                <button class="popupBtn myBtn2" id="analysisResultBtn"><i class="fas fa-times"></i></button>
-                <table>
+                <table style="width: 100%;">
                     <thead>
-                        <th>
-                            Analysis results
-                        </th>
+                        <tr>
+                            <th colspan="2" style="text-align: center; padding:2px; width: 100%; ">Nodal Displacement</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Load Pattern</td>
-                            <td>
-                                <select id="resultPattern" style="width:100%;">
-                                    <option value="dead">Dead</option>
-                                    <option value="live">Live</option>
-                                    <option value="combination">combination</option>
-                                </select>
-                            </td>
+                            <th  style="text-align: left; padding-bottom:2px ">Node Id:</th>
+                            <td><input type="text" disabled id="reNodeId" value="0" style="width: 100%;"></td>
                         </tr>
                         <tr>
-                            <td>Straining Action &nbsp;</td>
-                            <td>
-                                <select id="strainingAction" style="width:100%;">
-                                    <option value="Mo">Moment</option>
-                                    <option value="V">Shear</option>
-                                    <option value="No">Normal</option>
-                                    <option value="rv">Reaction</option>
-                                </select>
-                            </td>
+                            <th  style="text-align: left; padding-bottom:2px ">Ux:</th>
+                            <td><input type="text" disabled id="nodeUx" value="0" style="width: 100%;"></td>
                         </tr>
                         <tr>
-                            <td> Display Mode &nbsp;</td>
-                            <td>
-                                <select id="display" style="width:100%;">
-                                    <option value="0">Wireframe</option>
-                                    <option value="1">Fill Diagrams</option>
-                                </select>
-                            </td>
+                            <th  style="text-align: left; padding-bottom:2px ">Uy:</th>
+                            <td><input type="text" disabled id="nodeUy" value="0" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <th  style="text-align: left; ">Uz:</th>
+                            <td><input type="text" disabled id="nodeUz" value="0" style="width: 100%;"></td>
                         </tr>
                     </tbody>
                 </table>
-                <br>
-                <button class="myBtn" onclick="result()">Show Result</button>
-                <button class="myBtn" onclick="hideResults()">Hide Result</button>
-                <br>
-                <br>
+            </div>
+        </div>
 
-                <table style="display:table; width:100%;">
-                    <tr>
-                        <td>
-                            <label>Station </label>
 
-                        </td>
-                        <td>
-                            <input type="text" id="station" class="myModalInput" disabled size="5"> <br />
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Action</label>
-
-                        </td>
-                        <td>
-                            <input type="text" id="action" class="myModalInput">
-
-                        </td>
-                    </tr>
+        <div id="eleAxialForceDetails" class="popupDiv narrowShortDivSize" style="margin: 20px;">
+            <div class="innerDiv">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="text-align: center; padding:2px; width: 100%; ">Element Force</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th style="text-align: left; padding-bottom:2px ">Element Id:</th>
+                            <td><input type="text" disabled id="resEleId" value="0" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: left; padding-bottom:2px ">Force:</th>
+                            <td><input type="text" disabled id="resForce" value="0" style="width: 100%;"></td>
+                        </tr>
+                        
+                    </tbody>
                 </table>
             </div>
         </div>
+
+
 
         <div id="viewsDetails" class="popupDiv large3DivSize">
             <div class="innerDiv">
@@ -829,19 +822,22 @@
     <div id="elementData" style="position:absolute;bottom:20px;right:20px;display: none">
         Element Data :
         ID <input type="text" id="beamId" disabled size="3" style="margin-left:5px;padding-left:5px">
-        Start Node<input type="text" id="beamStart" disabled size="7" style="margin-left:5px;padding-left:5px">
-        End Node<input type="text" id="beamEnd" disabled size="7" style="margin-left:5px;padding-left:5px">
-        A <input type="text" id="area" disabled size="7" style="margin-left:5px;padding-left:5px">
-        E <input type="text" id="modulusE" disabled size="7" style="margin-left:5px;padding-left:5px">
-        @* DeadLoad<input type="text" id="beamDead" disabled size="7" style="margin-left:5px;padding-left:5px"> *@
+        Start Node<input type="text" id="beamStart" disabled size="15" style="margin-left:5px;padding-left:5px">
+        End Node<input type="text" id="beamEnd" disabled size="15" style="margin-left:5px;padding-left:5px">
+        A <input type="text" id="area" disabled size="6" style="margin-left:5px;padding-left:5px">
+        E <input type="text" id="modulusE" disabled size="6" style="margin-left:5px;padding-left:5px">
+        @* Force<input type="text" id="eleAxialForce" disabled size="7" style="display: none; margin-left:5px;padding-left:5px">  *@
         @* LiveLoad<input type="text" id="beamLive" disabled size="7" style="margin-left:5px;padding-left:5px"> *@
     </div>
     <div id="nodeData" style="position:absolute;bottom:20px;right:20px">
         Node Data :
         ID <input type="text" id="nodeId" disabled size="3" style="margin-left:5px;padding-left:5px">
-        Position <input type="text" id="nodePosition" disabled size="7" style="margin-left:5px;padding-left:5px">
-        Load <input type="text" id="nodeLoad" disabled size="7" style="margin-left:5px;padding-left:5px">
+        Position <input type="text" id="nodePosition" disabled size="12" style="margin-left:5px;padding-left:5px">
+        Load <input type="text" id="nodeLoad" disabled size="21" style="margin-left:5px;padding-left:5px">
         Constraint <input type="text" id="nodeConstraint" disabled size="7" style="margin-left:5px;padding-left:5px">
+        @* Ux <input type="text" id="nodeDispUx" disabled size="5" style="display: none; margin-left:5px;padding-left:5px"> *@
+        @* Uy <input type="text" id="nodeDispUy" disabled size="5" style="display: none; margin-left:5px;padding-left:5px"> *@
+        @* Uz <input type="text" id="nodeDispUz" disabled size="5" style="display: none; margin-left:5px;padding-left:5px"> *@
     </div>
 
 

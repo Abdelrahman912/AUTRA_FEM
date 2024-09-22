@@ -89,6 +89,14 @@ class Node {
             modelNodes[i].data = node.data; //switch modelNodes position to Vector3
         }
     }
+
+    static assignResults(nodes, resultNodes) {
+        nodes.forEach(n => {
+            let nodeDisp = resultNodes.find(r => r.nodeId == n.data.id);
+            n.visual.displacement = new THREE.Vector3(nodeDisp.ux, nodeDisp.uy, nodeDisp.uz);
+        });
+       
+    }
 }
 
 //Naming with X or Z denotes the outer loop

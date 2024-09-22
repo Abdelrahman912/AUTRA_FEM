@@ -15,7 +15,7 @@
     //#endregion
 
     function smallTetraeder() {
-
+        // example of a small tetraeder (basic code)
         coordX = [-7.5, 0, 7.5];
         coordZ = [-4.33,0,8.66];
         levels = [0, 12.25]
@@ -71,6 +71,7 @@
 
 
         let c3 = new Constraint(false, false, false);
+        n3.data.constraint = c3;
         let c3Viz = new ConstraintViz(n3.data.id, n3.data.position.clone(), false, false, false);
         editor.visualObjects.Constraints.push(c3Viz);
         editor.addToGroup(c3Viz.group, 'constraints');
@@ -792,42 +793,42 @@
 
                 res = JSON.parse(res);
                 editor.clearGroup('results');
-                editor.hideGroup('nodes');
+               // editor.hideGroup('nodes');
                 analysisResult.style.display = 'block';
-                $('#generateDrawings').css('display', 'block');
-                FrameElement.assignResults(mainBeams[0], res.mainBeams); //MainBeams
-                Beam.showResults(mainBeams[0], 'dead', 'showMoment', 0, domEvents, editor);
-                FrameElement.assignResults(secondaryBeams[0], res.secondaryBeams); //SecondaryBeams
-                Beam.showResults(secondaryBeams[0], 'dead', 'showMoment', 0, domEvents, editor);
-                FrameElement.assignResults(columns[0], res.columns); //Columns
-                for (let i = 0; i < columns[0].length; i++) { //Supports reaction
-                    nodes[i].visual.reactions = res.supports[i].reactions;
-                }
-                $(' #analysisResult ').click();
-                $.ajax({
-                    url: `/Outputs/Reports/Design Calculation Sheet for ${projectProperties.name}.pdf`,
-                    type: 'GEt',
-                    xhrFields: { responseType: "blob" },
-                    success: function (data) {
-                        let text = new Blob([data], { type: 'octet-stream' }); //Blob : An object that represents a file
-                        let textFile = window.URL.createObjectURL(text); // The URL to that object
-                        let link = document.createElement('a'); //Create HTML link to download the file on client machine
-                        link.setAttribute('download', `Design Calculation Sheet for ${projectProperties.name}.pdf`);
-                        link.href = textFile;
-                        document.body.appendChild(link);
-                        setTimeout(function () { // domElement takes some time to be added to the document
-                            link.click(); //Fire the click event of the link
-                            document.body.removeChild(link); //The link is no longer needed
-                            URL.revokeObjectURL(textFile); // Dispose the URL Object
-                            $('#staticBackdrop').modal('hide');
-                            showInfoModal('Analysis and design completed.\n Design report is downloaded');
-                        }, 1000);
-                    },
-                    error: function (x, y, err) {
-                        debugger
-                        showInfoModal('Something went wrong, please try again');
-                    }
-                });
+                
+                FrameElement.assignResults(trussElements, res.elementForces); 
+                Node.assignResults(nodes, res.nodalDisplacements);
+                //Beam.showResults(mainBeams[0], 'dead', 'showMoment', 0, domEvents, editor);
+                //Beam.showResults(secondaryBeams[0], 'dead', 'showMoment', 0, domEvents, editor);
+                //FrameElement.assignResults(columns[0], res.columns); //Columns
+                //for (let i = 0; i < columns[0].length; i++) { //Supports reaction
+                //    nodes[i].visual.reactions = res.supports[i].reactions;
+                //}
+                //$(' #analysisResult ').click();
+                //$.ajax({
+                //    url: `/Outputs/Reports/Design Calculation Sheet for ${projectProperties.name}.pdf`,
+                //    type: 'GEt',
+                //    xhrFields: { responseType: "blob" },
+                //    success: function (data) {
+                //        let text = new Blob([data], { type: 'octet-stream' }); //Blob : An object that represents a file
+                //        let textFile = window.URL.createObjectURL(text); // The URL to that object
+                //        let link = document.createElement('a'); //Create HTML link to download the file on client machine
+                //        link.setAttribute('download', `Design Calculation Sheet for ${projectProperties.name}.pdf`);
+                //        link.href = textFile;
+                //        document.body.appendChild(link);
+                //        setTimeout(function () { // domElement takes some time to be added to the document
+                //            link.click(); //Fire the click event of the link
+                //            document.body.removeChild(link); //The link is no longer needed
+                //            URL.revokeObjectURL(textFile); // Dispose the URL Object
+                //            $('#staticBackdrop').modal('hide');
+                //            showInfoModal('Analysis and design completed.\n Design report is downloaded');
+                //        }, 1000);
+                //    },
+                //    error: function (x, y, err) {
+                //        debugger
+                //        showInfoModal('Something went wrong, please try again');
+                //    }
+                //});
                 $('#staticBackdrop').modal('hide')
             },
             error: function (x, y, res) {
@@ -836,6 +837,23 @@
             }
         });
     }
+
+
+    window.showDeformedShape = function () {
+        
+        flipDiv('#deformedShapeDetails');
+    }
+
+    window.showElementForces = function () {
+        flipDiv('#eleAxialForceDetails');
+    }
+
+    window.showUndeformedShape = function () {
+        $('#eleAxialForceDetails').css('display', 'none');
+        $('#deformedShapeDetails').css('display', 'none');
+
+    }
+
 
     window.save = function () { // Save data on the server
         $('#staticBackdrop').modal('show');

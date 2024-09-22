@@ -57,15 +57,15 @@ namespace AUTRA.Controllers
         [HttpPost]
         public string Solve([FromBody] ModelDto model)
         {
-           string response = JsonConvert.SerializeObject(new {}, new JsonSerializerSettings
-           {
-               ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
-               Converters = new List<JsonConverter> { new StringEnumConverter(new CamelCaseNamingStrategy()) }
-           });
             var nodes = model.Nodes.Select(dto => dto.ToModel()).ToList();
             var eles = model.TrussElements.Select(dto => dto.ToModel(nodes)).ToList();
             var truss = new TrussStructure(nodes, eles);
             var pp = truss.Solve();
+           string response = JsonConvert.SerializeObject(pp.ToDto(), new JsonSerializerSettings
+           {
+               ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
+               Converters = new List<JsonConverter> { new StringEnumConverter(new CamelCaseNamingStrategy()) }
+           });
             return response;
         }
 

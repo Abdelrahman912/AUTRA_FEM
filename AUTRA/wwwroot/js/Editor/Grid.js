@@ -81,15 +81,35 @@ function Grid(coordX, coordZ, shift, levels) {
 
    
 
-    let gridNamesGeometry = new THREE.TextBufferGeometry(``, geoProperties); //Empty geometry to append geometries in
-    for (let i = 0; i < numberInX; i++) { //Vertical grids (letters)
+    //let gridNamesGeometry = new THREE.TextBufferGeometry(``, geoProperties); //Empty geometry to append geometries in
+    //for (let i = 0; i < numberInX; i++) { //Vertical grids (letters)
+    //    let geometry = new THREE.TextBufferGeometry(`${String.fromCharCode(i + 65)}`, geoProperties);
+    //    let geometry2 = geometry.clone();
+    //    geometry.applyMatrix4(matrix.makeRotationX(-Math.PI / 2)).applyMatrix4(matrix.makeTranslation(coordX[i], 0, -shift + coordZ[0] - geoProperties.size));
+    //    gridNamesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridNamesGeometry, geometry]);
+
+    //    geometry2.applyMatrix4(matrix.makeRotationX(-Math.PI / 2)).applyMatrix4(matrix.makeTranslation(coordX[i], 0, coordZ[coordZ.length - 1] + shift + geoProperties.size));
+    //    gridNamesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridNamesGeometry, geometry2]);
+    //}
+
+    let gridNamesGeometry = null; // Initialize as null
+
+    for (let i = 0; i < numberInX; i++) {
         let geometry = new THREE.TextBufferGeometry(`${String.fromCharCode(i + 65)}`, geoProperties);
         let geometry2 = geometry.clone();
-        geometry.applyMatrix4(matrix.makeRotationX(-Math.PI / 2)).applyMatrix4(matrix.makeTranslation(coordX[i], 0, -shift + coordZ[0] - geoProperties.size));
-        gridNamesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridNamesGeometry, geometry]);
 
+        geometry.applyMatrix4(matrix.makeRotationX(-Math.PI / 2)).applyMatrix4(matrix.makeTranslation(coordX[i], 0, -shift + coordZ[0] - geoProperties.size));
         geometry2.applyMatrix4(matrix.makeRotationX(-Math.PI / 2)).applyMatrix4(matrix.makeTranslation(coordX[i], 0, coordZ[coordZ.length - 1] + shift + geoProperties.size));
-        gridNamesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridNamesGeometry, geometry2]);
+
+        if (gridNamesGeometry) {
+            gridNamesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridNamesGeometry, geometry]);
+            gridNamesGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries([gridNamesGeometry, geometry2]);
+        } else {
+            if (geometry.attributes) {
+
+                gridNamesGeometry = geometry;
+            }
+        }
     }
 
     for (let i = 0; i < numberInZ; i++) { //Horizontal grids (Numbers)

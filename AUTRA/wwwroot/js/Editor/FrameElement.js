@@ -144,10 +144,15 @@ class FrameElement {
         }
     }
     static assignResults(elements, resultElements) {
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].visual.strainingActions = resultElements[i].strainingActions;
-            elements[i].visual.strainingActions.push(resultElements[i].combinedSA[0]);
-        }
+        elements.forEach(e => {
+                 let eleForce = resultElements.find(f => f.elementId == e.data.elementId);
+                e.visual.strainingActions = eleForce.force;
+            });
+        //for (let i = 0; i < elements.length; i++) {
+            //elements[i].visual.strainingActions = resultElements[i].strainingActions;
+            //elements[i].visual.strainingActions.push(resultElements[i].combinedSA[0]);
+
+        //}
     }
 }
 

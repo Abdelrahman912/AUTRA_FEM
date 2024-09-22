@@ -230,6 +230,12 @@ line-height:15px;
     width: 220px;
 }
 
+
+.medDivSize {
+    height: 200px;
+    width: 200px;
+}
+
 .res2Div {
     display: none;
     position: absolute;

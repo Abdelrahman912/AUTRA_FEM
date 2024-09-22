@@ -1,12 +1,13 @@
 ﻿using AUTRA.FEM.Entities.BoundaryConditions;
 using AUTRA.FEM.Entities.Elements;
+using AUTRA.FEM.Entities.Results;
 using iText.Layout.Element;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace AUTRA.Dtos
 {
-    public  static class DtosExtension
+    public static class DtosExtension
     {
 
         private static Constraint ToModel(this ConstraintDto constraintDto)
@@ -24,14 +25,38 @@ namespace AUTRA.Dtos
             return node;
         }
 
-       
+
         public static LineElement ToModel(this FrameElementDto dto, List<Node> nodes)
         {
             var startNode = nodes.First(n => n.Id == dto.StartNodeId);
-            var endNode = nodes.First(n => n.Id == dto.EndNodeId);  
+            var endNode = nodes.First(n => n.Id == dto.EndNodeId);
             var ele = new LineElement(dto.ElementId, startNode, endNode, dto.E, dto.A);
             return ele;
         }
 
+
+        public static PostProcessingDto ToDto(this PostProcessing pp)
+        {
+            var nodalDisplacements = pp.NodalDisplacements.Select(kvp => new NodalDisplacementDto
+            {
+                NodeId = kvp.Key,
+                Ux = kvp.Value.X,
+                Uy = kvp.Value.Y,
+                Uz = kvp.Value.Z
+            }).ToList();
+
+            var elementForces = pp.ElementNormalForce.Select(kvp => new ElementForceDto
+            {
+                ElementId = kvp.Key,
+                Force = kvp.Value
+            }).ToList();
+
+            return new PostProcessingDto
+            {
+                NodalDisplacements = nodalDisplacements,
+                ElementForces = elementForces
+            };
+
+        }
     }
 }

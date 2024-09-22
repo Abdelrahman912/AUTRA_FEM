@@ -1,3 +1,14 @@
+function formatNumber(value) {
+    var num = Number(value);
+
+    // If the absolute value of the number is too large or too small, use exponential notation
+    if (Math.abs(num) >= 1e4 || Math.abs(num) < 1e-3 && num !== 0) {
+        return num.toExponential(2); // 2 decimal places in scientific notation
+    } else {
+        return num.toFixed(2); // Fixed to 2 decimal places
+    }
+}
+
 class GPUPickHelper {
     constructor() {
         // create a 9x9 pixel render target
@@ -95,6 +106,8 @@ class GPUPickHelper {
         this.tempSelected.clear();
     }
 
+    
+
     select(cssPosition, multiple, renderer, pickingScene, camera) { //On mouse click
         // restore the color if there is a picked object
         if (!multiple)
@@ -108,25 +121,41 @@ class GPUPickHelper {
                 object.material.color.setHex(object.material.color.getHex() + this.emissiveFlash);
                 console.log(object.userData);
                 if (object.userData.element) {
+                    // TODO: Format the numbers
                     $('#nodeData').css('display', 'none');
                     $('#elementData').css('display', 'block');
                     let element = object.userData.element;
                     $('#beamId').val(element.data.elementId);
-                    $('#area').val(element.data.A);
-                    $('#modulusE').val(element.data.E);  
-                    $('#beamStart').val(`${element.data.startNode.data.id}(${element.data.startNode.data.position.x},${element.data.startNode.data.position.z},${element.data.startNode.data.position.y})`);
-                    $('#beamEnd').val(`${element.data.endNode.data.id}(${element.data.endNode.data.position.x},${element.data.endNode.data.position.z},${element.data.endNode.data.position.y})`);
+                    $('#area').val(formatNumber(element.data.A));
+                    $('#modulusE').val(formatNumber(element.data.E));  
+                    $('#beamStart').val(`${element.data.startNode.data.id}(${formatNumber(element.data.startNode.data.position.x)},${formatNumber(element.data.startNode.data.position.z)},${formatNumber(element.data.startNode.data.position.y)})`);
+                    $('#beamEnd').val(`${element.data.endNode.data.id}(${formatNumber(element.data.endNode.data.position.x)},${formatNumber(element.data.endNode.data.position.z)},${formatNumber(element.data.endNode.data.position.y)})`);
+                    if (element.visual.strainingActions) {
+                        // show fields and assign results
+                        
+                        $('#resEleId').val(formatNumber(element.data.elementId));
+                        $('#resForce').val(formatNumber(element.visual.strainingActions));
+                    }
                 } else if (object.userData.node) {
                     $('#elementData').css('display', 'none');
                     $('#nodeData').css('display', 'block');
                     let node = object.userData.node;
                     $('#nodeId').val(node.data.id);
-                    $('#nodePosition').val(`${node.data.position.x},${node.data.position.z},${node.data.position.y}`);
-                    $('#nodeLoad').val(`${node.data.force.x},${node.data.force.y},${node.data.force.z}`);
+                    $('#nodePosition').val(`${formatNumber(node.data.position.x)},${formatNumber(node.data.position.z)},${formatNumber(node.data.position.y)}`);
+                    $('#nodeLoad').val(`${formatNumber(node.data.force.x)},${formatNumber(node.data.force.y)},${formatNumber(node.data.force.z)}`);
                     let constraint = node.data.constraint;
                     console.log(constraint);
                     // read the free array in constraint and change true -> R and false -> F
                     $('#nodeConstraint').val(`${constraint.free[0] ? 'R' : 'F'},${constraint.free[1] ? 'R' : 'F'},${constraint.free[2] ? 'R' : 'F'}`);
+
+                    if (node.visual.displacement) {
+
+                        $('#reNodeId').val(node.data.id)
+                        $('#nodeUx').val(formatNumber(node.visual.displacement.x))
+                        $('#nodeUy').val(formatNumber(node.visual.displacement.y))
+                        $('#nodeUz').val(formatNumber(node.visual.displacement.z))
+                    }
+
                 } else {
                     $('#elementData').css('display', 'none');
                     $('#nodeData').css('display', 'none');
