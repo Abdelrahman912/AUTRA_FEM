@@ -152,8 +152,8 @@ class GPUPickHelper {
 
                         $('#reNodeId').val(node.data.id)
                         $('#nodeUx').val(formatNumber(node.visual.displacement.x))
-                        $('#nodeUy').val(formatNumber(node.visual.displacement.y))
-                        $('#nodeUz').val(formatNumber(node.visual.displacement.z))
+                        $('#nodeUy').val(formatNumber(node.visual.displacement.z)) // z an y are swapped 
+                        $('#nodeUz').val(formatNumber(node.visual.displacement.y)) // z and y are swapped
                     }
 
                 } else {

@@ -79,6 +79,7 @@ function elementDataToDto(eleData) {
 class ElementVisual { // Visual data for editor
     constructor(startPoint, endPoint,  lineMaterial, direction, rotation) {
         this.direction = direction;
+        this.rotation = rotation;
         this.wireframe = createWireframe(startPoint, endPoint, lineMaterial, rotation);
         //this.extruded = createExtrudedMesh(shape, length, meshMaterial);
         this.mesh = this.wireframe;                    //Currently rendered mesh
@@ -154,6 +155,30 @@ class FrameElement {
 
         //}
     }
+
+    static createDeformedElements(elements,scale, editor) {
+        let deformedElements = [];
+        for (let i = 0; i < elements.length; i++) {
+            let deformedStart = elements[i].data.startNode.data.position.clone().add(elements[i].data.startNode.visual.displacement.clone().multiplyScalar(scale));
+            let deformedEnd = elements[i].data.endNode.data.position.clone().add(elements[i].data.endNode.visual.displacement.clone().multiplyScalar(scale));
+
+            let direction = (deformedEnd.clone().sub(deformedStart)).normalize();
+            // Compute quaternion rotation to align the element's direction with the calculated direction
+            let quaternion = new THREE.Quaternion().setFromUnitVectors(zVector, direction);
+
+            // Convert quaternion to Euler rotation
+            let rotation = new THREE.Euler().setFromQuaternion(quaternion);
+
+            let deformedElement = new FrameElement(elements[i].data.E, elements[i].data.A, deformedStart, deformedEnd,
+                lineMaterial.clone(), elements[i].data.startNode, elements[i].data.endNode, elements[i].visual.direction,
+                rotation);
+           
+            editor.createPickingObject(deformedElement);
+            editor.addToGroup(deformedElement.visual.mesh, 'deformedShape');
+            deformedElements.push(deformedElement);
+        }
+        return deformedElements;
+    }
 }
 
 function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNode){
@@ -164,9 +189,6 @@ function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNod
     // Convert quaternion to Euler rotation
     let rotation = new THREE.Euler().setFromQuaternion(quaternion);
     element =  new FrameElement(E,A, startPoint, EndPoint, lineMaterial.clone(), startNode, EndNode, direction, rotation);
-    console.log(element);
-    console.log(startNode);
-    console.log(EndNode);
     editor.addToGroup(element.visual.mesh, 'elements');
     editor.createPickingObject(element);
     // add textto denote element id

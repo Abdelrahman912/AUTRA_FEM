@@ -12,6 +12,8 @@
     let draw = false, drawingPoints = [];
     let sectionId = 0;
     let boundingLength = 10; // initial value, change once grids are made.
+    let deformedNodes = null;
+    let deformedElements = null;
     //#endregion
 
     function smallTetraeder() {
@@ -191,46 +193,8 @@
                 //creating and adding the Hinged-Nodes to MainNodes Array
                 let nodesResult = createNodes(editor, coordX, levels, coordZ);
                 nodes = nodes.concat(nodesResult);
-                //createNodeLabels(editor, nodes);
-                //for (let i = 1; i < levels.length; i++) {
-
-                //    [mainBeamsLoop, secondaryBeamsLoop, mainNodesLoop, secNodesLoop, secSpacings] = generateMainBeamsX(editor, coordX, levels[i], coordZ,
-                //        sections[1], sections[0], secSpacing); //Auto generate floor beams and nodes in X
-
-                //    nodesLoop = mainNodesLoop.concat(secNodesLoop);
-                //    nodes = nodes.concat(nodesLoop);
-                //    mainNodes.push(mainNodesLoop);
-
-                //    columnsLoop = generateColumnsZ(editor, coordX, coordZ, mainNodes[i - 1], mainNodes[i], sections[2]); //Auto generate columns
-
-                //    mainBeams.push(mainBeamsLoop);
-                //    secondaryBeams.push(secondaryBeamsLoop);
-                //    columns.push(columnsLoop);
-                //}
-                //Load.distributeAreaLoad(parseFloat($('#floorDead').val()), parseFloat($('#floorLive').val()), secondaryBeams, coordZ, secSpacings);
             }
-            else {
-                ////empty editor
-                //lowerNodesIntial = createNodesX(editor, coordX, coordZ);
-                //mainNodes.push(lowerNodesIntial);
-                //nodes = nodes.concat(lowerNodesIntial);
-
-                //for (let i = 1; i < levels.length; i++) {
-                //    [mainBeamsLoop, secondaryBeamsLoop, mainNodesLoop, secNodesLoop, secSpacings] = generateMainBeamsZ(editor, coordX, levels[i], coordZ,
-                //        sections[1], sections[0], secSpacing); //Auto generate floor beams and nodes in Z
-
-                //    nodesLoop = mainNodesLoop.concat(secNodesLoop);
-                //    nodes = nodes.concat(nodesLoop);
-                //    mainNodes.push(mainNodesLoop);
-
-                //    columnsLoop = generateColumnsX(editor, coordX, coordZ, mainNodes[i - 1], mainNodes[i], sections[2]); //Auto generate columns 
-
-                //    mainBeams.push(mainBeamsLoop);
-                //    secondaryBeams.push(secondaryBeamsLoop);
-                //    columns.push(columnsLoop);
-                //}
-                //Load.distributeAreaLoad(parseFloat($('#floorDead').val()), parseFloat($('#floorLive').val()), secondaryBeams, coordX, secSpacings);
-            }
+            
             $('#staticBackdrop').modal('hide');
             confirmCloseWindow();
         }
@@ -493,8 +457,7 @@
     }
 
     window.toggle = () => editor.toggleBeams();//Toggle elements between wireFrame and extruded view
-
-    window.measure = () => {//Measure distance between two nodes
+        window.measure = () => {//Measure distance between two nodes
         let points = [];
         if (editor.picker.selectedObject.size == 2) {
             for (let item of editor.picker.selectedObject) {
@@ -792,43 +755,13 @@
                 domEvents = new THREEx.DomEvents(editor.renderedCamera, canvas);
 
                 res = JSON.parse(res);
-                editor.clearGroup('results');
                // editor.hideGroup('nodes');
                 analysisResult.style.display = 'block';
                 
                 FrameElement.assignResults(trussElements, res.elementForces); 
                 Node.assignResults(nodes, res.nodalDisplacements);
-                //Beam.showResults(mainBeams[0], 'dead', 'showMoment', 0, domEvents, editor);
-                //Beam.showResults(secondaryBeams[0], 'dead', 'showMoment', 0, domEvents, editor);
-                //FrameElement.assignResults(columns[0], res.columns); //Columns
-                //for (let i = 0; i < columns[0].length; i++) { //Supports reaction
-                //    nodes[i].visual.reactions = res.supports[i].reactions;
-                //}
-                //$(' #analysisResult ').click();
-                //$.ajax({
-                //    url: `/Outputs/Reports/Design Calculation Sheet for ${projectProperties.name}.pdf`,
-                //    type: 'GEt',
-                //    xhrFields: { responseType: "blob" },
-                //    success: function (data) {
-                //        let text = new Blob([data], { type: 'octet-stream' }); //Blob : An object that represents a file
-                //        let textFile = window.URL.createObjectURL(text); // The URL to that object
-                //        let link = document.createElement('a'); //Create HTML link to download the file on client machine
-                //        link.setAttribute('download', `Design Calculation Sheet for ${projectProperties.name}.pdf`);
-                //        link.href = textFile;
-                //        document.body.appendChild(link);
-                //        setTimeout(function () { // domElement takes some time to be added to the document
-                //            link.click(); //Fire the click event of the link
-                //            document.body.removeChild(link); //The link is no longer needed
-                //            URL.revokeObjectURL(textFile); // Dispose the URL Object
-                //            $('#staticBackdrop').modal('hide');
-                //            showInfoModal('Analysis and design completed.\n Design report is downloaded');
-                //        }, 1000);
-                //    },
-                //    error: function (x, y, err) {
-                //        debugger
-                //        showInfoModal('Something went wrong, please try again');
-                //    }
-                //});
+                deformedNodes = Node.createDeformedNodes(nodes, 10000, editor);
+                deformedElements = FrameElement.createDeformedElements(trussElements, 10000, editor);
                 $('#staticBackdrop').modal('hide')
             },
             error: function (x, y, res) {
@@ -842,6 +775,7 @@
     window.showDeformedShape = function () {
         
         flipDiv('#deformedShapeDetails');
+        editor.showGroup('deformedShape')
     }
 
     window.showElementForces = function () {
@@ -1000,48 +934,5 @@
         if (view)
             editor.changeView(grids, view);
     }
-
-    window.generateDrawings = () => {
-        showInfoModal('Generating drawings');
-        $('#autraLogo').addClass('img');
-        editor.clearGroup('loads');
-        $.ajax({
-            url: `/Editor/Model`,
-            type: "POST",
-            success: function (res) {
-                if (res) {
-                    $.ajax({
-                        url: `/Outputs/plotfiles/${projectProperties.name}.zip`,
-                        type: 'GEt',
-                        xhrFields: { responseType: "blob" },
-                        success: function (data) {
-                            let text = new Blob([data], { type: 'octet-stream' }); //Blob : An object that represents a file
-                            let textFile = window.URL.createObjectURL(text); // The URL to that object
-                            let link = document.createElement('a'); //Create HTML link to download the file on client machine
-                            link.setAttribute('download', `${projectProperties.name}.zip`);
-                            link.href = textFile;
-                            document.body.appendChild(link);
-                            setTimeout(function () { // domElement takes some time to be added to the document
-                                link.click(); //Fire the click event of the link
-                                document.body.removeChild(link); //The link is no longer needed
-                                URL.revokeObjectURL(textFile); // Dispose the URL Object
-                                showInfoModal('Drawings created');
-                                $('#autraLogo').removeClass('img');
-                            }, 1000);
-                        },
-                        error: function (x, y, err) {
-                            debugger
-                            showInfoModal('Something went wrong, please try again');
-                            $('#autraLogo').removeClass('img');
-                        }
-                    });
-                }
-            },
-            error: function (x, y, res) {
-                $('#staticBackdrop').modal('hide')
-                showInfoModal('Something went wrong. Please try again');
-                $('#autraLogo').removeClass('img');
-            }
-        });
-    }
+    
 })();

@@ -93,9 +93,26 @@ class Node {
     static assignResults(nodes, resultNodes) {
         nodes.forEach(n => {
             let nodeDisp = resultNodes.find(r => r.nodeId == n.data.id);
-            n.visual.displacement = new THREE.Vector3(nodeDisp.ux, nodeDisp.uy, nodeDisp.uz);
+            n.visual.displacement = new THREE.Vector3(nodeDisp.ux, nodeDisp.uz, nodeDisp.uy);
         });
        
+    }
+
+    static createDeformedNodes(nodes, scale, editor) {
+        
+        let deformedNodes = [];
+        for (let i = 0; i < nodes.length; i++) {
+            let deformedPosition = nodes[i].data.position.clone().add(nodes[i].visual.displacement.clone().multiplyScalar(scale));
+            let deformedNode = new Node(deformedPosition.x, deformedPosition.y, deformedPosition.z, nodes[i].data.support, nodes[i].data.id);
+            editor.createPickingObject(deformedNode);
+            deformedNode.data = nodes[i].data;
+            deformedNode.visual.displacement = nodes[i].visual.displacement;
+            editor.hideGroup('deformedShape');
+            editor.addToGroup(deformedNode.visual.mesh,'deformedShape');
+            deformedNodes.push(deformedNode);
+            //nodes[i].visual.deformedNode = deformedNode;
+        }
+        return deformedNodes;
     }
 }
 

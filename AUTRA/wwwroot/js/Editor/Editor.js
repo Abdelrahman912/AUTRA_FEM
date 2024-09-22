@@ -68,8 +68,10 @@ class Editor {
         this.scene.add(this.scene.userData.dimensions);
         this.scene.userData.loads = new THREE.Group();
         this.scene.add(this.scene.userData.loads);
-        this.scene.userData.results = new THREE.Group();
-        this.scene.add(this.scene.userData.results);
+        this.scene.userData.deformedShape = new THREE.Group();
+        this.scene.add(this.scene.userData.deformedShape);
+        this.scene.userData.elementFroces = new THREE.Group();
+        this.scene.add(this.scene.userData.elementFroces);
         this.scene.userData.labels = new THREE.Group();
         this.scene.add(this.scene.userData.labels);
         this.scene.userData.constraints = new THREE.Group();
