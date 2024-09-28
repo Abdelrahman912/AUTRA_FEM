@@ -1,42 +1,8 @@
 let lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 let elementFontMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 let zVector = new THREE.Vector3(0, 0, 1);
-function SectionDimensions(depth) { //Calculate the dimensions relative to it depth
-    this.clearHeight = depth || 0.5;
-    this.flangeWidth = 0.5 * depth || 0.25;
-    this.webThickness = 0.03 * depth || 0.02;
-    this.flangeThickness = 0.06 * depth || 0.05;
-}
 
-function createShape(dimensions) { //draw section shape using its dimensions
-    let shape = new THREE.Shape();
-    let shiftX = -dimensions.flangeWidth / 2;
-    let shiftY = -(dimensions.clearHeight / 2 + dimensions.flangeThickness);
-    shape.moveTo(shiftX, shiftY);
-    shape.lineTo(dimensions.flangeWidth + shiftX, 0 + shiftY);
-    shape.lineTo(dimensions.flangeWidth + shiftX, dimensions.flangeThickness + shiftY);
-    shape.lineTo(dimensions.flangeWidth - (dimensions.flangeWidth - dimensions.webThickness) / 2 + shiftX, dimensions.flangeThickness + shiftY);
-    shape.lineTo(dimensions.flangeWidth - (dimensions.flangeWidth - dimensions.webThickness) / 2 + shiftX, dimensions.flangeThickness + dimensions.clearHeight + shiftY);
-    shape.lineTo(dimensions.flangeWidth + shiftX, dimensions.flangeThickness + dimensions.clearHeight + shiftY);
-    shape.lineTo(dimensions.flangeWidth + shiftX, dimensions.flangeThickness + dimensions.clearHeight + dimensions.flangeThickness + shiftY);
-    shape.lineTo(0 + shiftX, dimensions.flangeThickness + dimensions.clearHeight + dimensions.flangeThickness + shiftY);
-    shape.lineTo(0 + shiftX, dimensions.flangeThickness + dimensions.clearHeight + shiftY);
-    shape.lineTo((dimensions.flangeWidth - dimensions.webThickness) / 2 + shiftX, dimensions.flangeThickness + dimensions.clearHeight + shiftY);
-    shape.lineTo((dimensions.flangeWidth - dimensions.webThickness) / 2 + shiftX, dimensions.flangeThickness + shiftY);
-    shape.lineTo(0 + shiftX, dimensions.flangeThickness + shiftY);
-    shape.lineTo(0 + shiftX, 0 + shiftY);
-    return shape;
-}
 
-let extrudeSettings = {
-    steps: 1,
-    bevelEnabled: false
-};
-
-function createExtrudedMesh(shape, length, material) {
-    extrudeSettings.depth = length;
-    return new THREE.Mesh(new THREE.ExtrudeBufferGeometry(shape, extrudeSettings), material);
-}
 
 let lineStart = new THREE.Vector3(0, 0, 0);
 function createWireframe(startPoint, endPoint, material, rotation) { //Draw line at (0,0,0) and the translate and rotate it(the same as mesh)
@@ -149,11 +115,6 @@ class FrameElement {
                  let eleForce = resultElements.find(f => f.elementId == e.data.elementId);
                 e.visual.strainingActions = eleForce.force;
             });
-        //for (let i = 0; i < elements.length; i++) {
-            //elements[i].visual.strainingActions = resultElements[i].strainingActions;
-            //elements[i].visual.strainingActions.push(resultElements[i].combinedSA[0]);
-
-        //}
     }
 
     static createDeformedElements(elements,scale, editor) {
@@ -172,13 +133,37 @@ class FrameElement {
             let deformedElement = new FrameElement(elements[i].data.E, elements[i].data.A, deformedStart, deformedEnd,
                 lineMaterial.clone(), elements[i].data.startNode, elements[i].data.endNode, elements[i].visual.direction,
                 rotation);
-           
+             // set the deformed element if as the original element
+            deformedElement.data.elementId = elements[i].data.elementId;
+            // change color of deformed element to show the deformation (green color)
+            deformedElement.visual.mesh.material.color.setHex(0x00ff00);
+
+            
             editor.createPickingObject(deformedElement);
             editor.addToGroup(deformedElement.visual.mesh, 'deformedShape');
             deformedElements.push(deformedElement);
         }
         return deformedElements;
     }
+
+   
+    static drawElementForces(elements, scale, editor) {
+        elements.forEach(element => {
+            let force = element.visual.strainingActions; 
+            let startPoint = element.visual.startPoint;
+            let endPoint = element.visual.endPoint;
+
+            // Create the force rectangle
+            let forceRectangle = createForceRectangle(force, startPoint, endPoint, scale);
+
+            
+            editor.addToGroup(forceRectangle, 'elementFroces');
+        });
+        editor.hideGroup('elementFroces');
+    }
+
+
+
 }
 
 function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNode){
@@ -221,4 +206,34 @@ function renumberElements(elements) {
             bevelEnabled: false
         });
     }
+}
+
+
+function createForceRectangle(force, startPoint, endPoint, scale) {
+    let forceMagnitude = Math.abs(force); // Get the magnitude of the force
+    let direction = new THREE.Vector3().subVectors(endPoint, startPoint).normalize();
+    let length = startPoint.distanceTo(endPoint);
+
+    // Define the width of the rectangle based on the force magnitude
+    let width = forceMagnitude * scale; // Scale it appropriately
+
+    // Create rectangle geometry
+    let geometry = new THREE.PlaneBufferGeometry(length, width);
+
+    // Determine the color based on force type (compression or tension)
+    let color = force > 0 ? 0x0000ff : 0xff0000; // Blue for tension, red for compression
+    let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
+
+    // Create the mesh for the force rectangle
+    let rectangle = new THREE.Mesh(geometry, material);
+
+    // Position the rectangle between startPoint and endPoint
+    let midPoint = startPoint.clone().add(endPoint).multiplyScalar(0.5);
+    rectangle.position.copy(midPoint);
+
+    // Align the rectangle along the direction of the element
+    let quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1, 0, 0), direction);
+    rectangle.setRotationFromQuaternion(quaternion);
+
+    return rectangle;
 }

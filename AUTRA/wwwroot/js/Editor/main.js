@@ -14,6 +14,7 @@
     let boundingLength = 10; // initial value, change once grids are made.
     let deformedNodes = null;
     let deformedElements = null;
+    let forcesScale = 1e-4;
     //#endregion
 
     function smallTetraeder() {
@@ -762,6 +763,7 @@
                 Node.assignResults(nodes, res.nodalDisplacements);
                 deformedNodes = Node.createDeformedNodes(nodes, 10000, editor);
                 deformedElements = FrameElement.createDeformedElements(trussElements, 10000, editor);
+                FrameElement.drawElementForces(trussElements,forcesScale, editor);
                 $('#staticBackdrop').modal('hide')
             },
             error: function (x, y, res) {
@@ -775,86 +777,24 @@
     window.showDeformedShape = function () {
         
         flipDiv('#deformedShapeDetails');
-        editor.showGroup('deformedShape')
+        editor.hideGroup('elementFroces');
+        editor.showGroup('deformedShape');
     }
 
     window.showElementForces = function () {
         flipDiv('#eleAxialForceDetails');
+        editor.hideGroup('deformedShape');
+        editor.showGroup('elementFroces');
     }
 
     window.showUndeformedShape = function () {
         $('#eleAxialForceDetails').css('display', 'none');
         $('#deformedShapeDetails').css('display', 'none');
+        editor.hideGroup('deformedShape');
+        editor.hideGroup('elementFroces');
 
     }
 
-
-    window.save = function () { // Save data on the server
-        $('#staticBackdrop').modal('show');
-        editor.renderer.render(editor.scene, editor.renderedCamera);
-        editor.canvas.toBlob(img => {
-            let form = new this.FormData();
-            form.append('name', projectProperties.name)
-            form.append('designer', projectProperties.designer)
-            form.append('owner', projectProperties.owner)
-            form.append('location', projectProperties.location)
-            form.append('city', projectProperties.city)
-            form.append('country', projectProperties.country)
-            form.append('image', img);
-            form.append('jsonFile', createModel());
-            $.ajax({
-                url: `/Editor/Save`,
-                type: "POST",
-                contentType: false,
-                processData: false,
-                data: form,
-                success: function (res) {
-                    $('#staticBackdrop').modal('hide');
-                    if (res)
-                        showInfoModal('Project saved successfully');
-                    else
-                        showInfoModal('Something went wrong. Please try again');
-                },
-                error: function (x, y, res) {
-                    $('#staticBackdrop').modal('hide');
-                    showInfoModal('Something went wrong. Please try again');
-                }
-            });
-        })
-    }
-
-    window.downloadFile = function () {
-        $('#staticBackdrop').modal('show');
-        let model = createModel();
-        //////this.localStorage.setItem('Model', model); //Save data to localStorage ??!! Option #1
-        //////Save data on client machine if no internet connection Option #2
-        let text = new Blob([model], { type: 'text/json' }); //blob : an object that represents a file
-        let textfile = window.URL.createObjectURL(text); // the url to that object
-        let link = document.createElement('a'); //create html link to download the file on client machine
-        link.setAttribute('download', `${projectProperties.name}.aut`);
-        link.href = textfile;
-        document.body.appendChild(link);
-        this.setTimeout(function () { // domelement takes some time to be added to the document
-            link.click(); //fire the click event of the link
-            document.body.removeChild(link); //the link is no longer needed
-            URL.revokeObjectURL(textfile); // dispose the url object
-            $('#staticBackdrop').modal('hide');
-        }, 1000);
-    }
-
-    $('#upload').change(function (event) { //Read data from uploaded file
-        $('#modalDivDetails').css('display', 'none');
-        $('#staticBackdrop').modal('show');
-        let file = event.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            let model = JSON.parse(evt.target.result);
-            retrocycle(model);
-            buildModel(model);
-            $('#staticBackdrop').modal('hide');
-        };
-        reader.readAsText(file);
-    });
 
     //used to toggle between dark and light themes
     window.darkTheme = () => editor.darkTheme();
@@ -888,46 +828,9 @@
         $('#showGrids').css('display', 'block');
     }
 
-    window.result = () => {
-        editor.clearGroup('results'); //Clear displayed results(if any)
-        editor.clearGroup('loads'); //Clear displayed results(if any)
-        editor.hideGroup('nodes'); //Temporarily hide nodes (for clearer display of stations)
-        let pattern = $('#resultPattern').val();
-        let strainingAction = $('#strainingAction').val();
-        let display = parseInt($('#display').val());
-        if (domEvents)
-            domEvents.destroy();//Clear old events (if existing)
-        domEvents = new THREEx.DomEvents(editor.renderedCamera, canvas);
-        switch (strainingAction) {
-            case 'Mo': //Bending Moment
-                Beam.showResults(mainBeams[0], pattern, 'showMoment', display, domEvents, editor);
-                Beam.showResults(secondaryBeams[0], pattern, 'showMoment', display, domEvents, editor);
-                break;
-            case 'V': //Shear Moment
-                Beam.showResults(mainBeams[0], pattern, 'showShear', display, domEvents, editor);
-                Beam.showResults(secondaryBeams[0], pattern, 'showShear', display, domEvents, editor);
-                break;
-            case 'No': //Normal
-                for (var j = 0; j < columns[0].length; j++) {
-                    editor.addToGroup(columns[0][j].showNormal(pattern, display, domEvents), 'results');
-                }
-                break;
-            case 'rv': //Reactions
-                for (var i = 0; i < nodes.length; i++) {
-                    if (nodes[i].data.support)
-                        editor.addToGroup(nodes[i].showReaction(pattern), 'results');
-                }
-                break;
-        }
-    };
+   
 
-    window.hideResults = () => {
-        if (domEvents)
-            domEvents.destroy();//Clear old events (if existing)
-
-        editor.clearGroup('results'); //Clear diplayed results
-        editor.showGroup('nodes'); //Display nodes again
-    }
+    
 
     window.changeView = () => {
         let view = $('#view').val();

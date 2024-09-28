@@ -107,11 +107,11 @@ class Node {
             editor.createPickingObject(deformedNode);
             deformedNode.data = nodes[i].data;
             deformedNode.visual.displacement = nodes[i].visual.displacement;
-            editor.hideGroup('deformedShape');
             editor.addToGroup(deformedNode.visual.mesh,'deformedShape');
             deformedNodes.push(deformedNode);
             //nodes[i].visual.deformedNode = deformedNode;
         }
+        editor.hideGroup('deformedShape');
         return deformedNodes;
     }
 }
