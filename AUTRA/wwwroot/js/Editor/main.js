@@ -1,5 +1,13 @@
 //https://threejsfundamentals.org/threejs/lessons/threejs-picking.html
 
+let loader = new THREE.FontLoader();
+let myFont;
+
+loader.load('/lib/three.js/helvetiker_regular.typeface.json',  (font) =>  {
+    myFont = font;
+    loader = null;
+
+
 (function () {
     let exampleId = parseInt($('#exampleId').val());
 
@@ -361,7 +369,7 @@
                 // check whether any element is connected to the node
                 // if connected, prevent deletion and show a message
                 // if not connected, delete the node
-                let exisitingEles = trussElements.find(e => e.data.startNode.data.$id === item.userData.node.data.$id || e.data.endNode.data.$id === item.userData.node.data.$id);
+                let exisitingEles = trussElements.find(e => e.data.startNode.data.id === item.userData.node.data.id || e.data.endNode.data.id === item.userData.node.data.id);
                 if (exisitingEles) {
                     showInfoModal('Node is connected to an element, please delete the element first');
                     return;
@@ -654,6 +662,9 @@
             beam.data.innerNodes.push({ "$ref": node.data.$id }); //Add the node to the beam inner nodes
         }
     }
+    window.endDrawNode = function () {
+        $('#addNodeCoordDetails').css('display', 'none');
+    }
 
     window.startDrawMode = () => 
     {
@@ -838,4 +849,5 @@
             editor.changeView(grids, view);
     }
     
-})();
+    })();
+});

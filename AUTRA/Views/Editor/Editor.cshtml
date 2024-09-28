@@ -411,20 +411,23 @@
                     <tbody>
                         <tr>
                             <th>X</th>
-                            <td><input type="text" id="nodeXCoord" value="0" size="5">&nbsp;m </td>
+                            <td><input type="text" id="nodeXCoord" value="0" size="5"> </td>
                         </tr>
                         <tr>
                             <th>Y</th>
-                            <td><input type="text" id="nodeZCoord" value="0" size="5">&nbsp;m</td>
+                            <td><input type="text" id="nodeZCoord" value="0" size="5"></td>
                         </tr>
                         <tr>
                             <th>Z</th>
-                            <td><input type="text" id="nodeYCoord" value="0" size="5">&nbsp;m</td>
+                            <td><input type="text" id="nodeYCoord" value="0" size="5"></td>
                         </tr>
                     <tbody>
                 </table>
                 <br>
-                <button type="button" class="myBtn" onclick="createNode()">Done</button>
+                <div class="buttonContainer" style="text-align: center;">
+                    <button class="myBtn" onclick="createNode()">Draw</button>
+                    <button class="myBtn" onclick="endDrawNode()">Close</button>
+                </div>
             </div>
         </div>
         <div id="addNodeBeamDetails" class="popupDiv meduimDivSize">
@@ -923,10 +926,8 @@
     <script src="~/js/Editor/Load.js"></script>
     <script src="~/js/Editor/Constraint.js"></script>
     <script src="~/js/Editor/Node.js"></script>
-    <script src="~/js/Editor/Grid.js"></script>
     <script src="~/js/Editor/FrameElement.js"></script>
-    <script src="~/js/Editor/Beam.js"></script>
-    <script src="~/js/Editor/Column.js"></script>
+    <script src="~/js/Editor/Grid.js"></script>
     <script src="~/js/Editor/Editor.js"></script>
     <script src="~/js/Editor/retroCycle.js"></script>
     <script src="~/js/Editor/main.js"></script>

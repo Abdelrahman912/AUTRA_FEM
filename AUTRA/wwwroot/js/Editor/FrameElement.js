@@ -161,9 +161,6 @@ class FrameElement {
         });
         editor.hideGroup('elementFroces');
     }
-
-
-
 }
 
 function  createFrameElement(editor,E,A, startPoint, EndPoint, startNode, EndNode){
