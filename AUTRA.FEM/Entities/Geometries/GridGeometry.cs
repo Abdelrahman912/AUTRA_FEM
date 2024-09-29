@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AUTRA.FEM.Entities.Geometries
 {
-    public abstract class Geometry
+    public class GridGeometry : Geometry
     {
     }
 }

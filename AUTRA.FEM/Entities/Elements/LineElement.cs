@@ -1,15 +1,11 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using AUTRA.FEM.Entities.Nodes;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AUTRA.FEM.Entities.Elements
 {
-    public class LineElement    
+    public class LineElement : Element
     {
         #region Private Fields
         private readonly Lazy<Matrix<double>> _k;
@@ -18,11 +14,10 @@ namespace AUTRA.FEM.Entities.Elements
         #endregion
 
         #region Properties
-        public int Id { get; }
         public double A { get; }
         public double E { get; }
-        public Node Node1 { get; }
-        public Node Node2 { get; }
+        public Node3D Node1 { get; }
+        public Node3D Node2 { get; }
         public double Length => (Node2.Position - Node1.Position).Length;
         public Matrix<double> K => _k.Value;
         public Matrix<double> T => _t.Value;
@@ -30,7 +25,8 @@ namespace AUTRA.FEM.Entities.Elements
         #endregion
 
         #region Constructors
-        public LineElement(int id, Node n1, Node n2, double e, double a)
+        public LineElement(int id, Node3D n1, Node3D n2, double e, double a)
+            : base(id)
         {
             Id = id;
             Node1 = n1;

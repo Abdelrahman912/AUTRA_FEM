@@ -1,5 +1,6 @@
-﻿using AUTRA.FEM.Entities.Elements;
+﻿using AUTRA.FEM.Entities.BoundaryConditions.Forces;
 using AUTRA.FEM.Entities.Geometries;
+using AUTRA.FEM.Entities.Nodes;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using System;
@@ -13,7 +14,7 @@ namespace AUTRA.FEM.Entities.Solver
         #region Private Fields
         private readonly Dictionary<int, List<int>> _nodeDofNumbers;
         private readonly Dictionary<int, List<int>> _elesDofNumbers;
-        private readonly Geometry _geometry;
+        private readonly SkeletonGeometry _geometry;
         private Lazy<int> _noDofs ;
         private Lazy<List<int>> _elesId;
         private Lazy<List<int>> _nodesId;
@@ -27,7 +28,7 @@ namespace AUTRA.FEM.Entities.Solver
         #endregion
 
         #region Constructor
-        public DofHandler(Geometry geometry)
+        public DofHandler(SkeletonGeometry geometry)
         {
             _geometry = geometry;
             _nodeDofNumbers = new Dictionary<int, List<int>>();
@@ -65,7 +66,7 @@ namespace AUTRA.FEM.Entities.Solver
             {
                 var n1 = ele.Node1;
                 var n2 = ele.Node2;
-                var nodes = new List<Node> { n1, n2 };
+                var nodes = new List<Node3D> { n1, n2 };
                 var dofs = nodes.SelectMany(n => _nodeDofNumbers[n.Id]).ToList();
                 _elesDofNumbers.Add(ele.Id, dofs);
             }
@@ -95,7 +96,7 @@ namespace AUTRA.FEM.Entities.Solver
 
         public Vector<double> GetNodalForce(int nodeId)
         {
-            return _geometry.GetNodeFromId(nodeId).NodalForce.Components.ToVector();
+            return ((NodalForce3D)_geometry.GetNodeFromId(nodeId).NodalForce).Components.ToVector();
         }
 
         #endregion

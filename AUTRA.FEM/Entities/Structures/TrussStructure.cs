@@ -4,6 +4,7 @@ using AUTRA.FEM.Entities.Solver;
 using MathNet.Numerics.LinearAlgebra;
 using AUTRA.FEM.Entities.Results;
 using System.Collections.Generic;
+using AUTRA.FEM.Entities.Nodes;
 
 namespace AUTRA.FEM.Entities.Structures
 {
@@ -12,7 +13,7 @@ namespace AUTRA.FEM.Entities.Structures
 
 
         #region Properties
-        public Geometry Geometry { get;}
+        public SkeletonGeometry Geometry { get;}
         public DofHandler DofHandler { get;  }
         public Assembler Assembler { get; }
 
@@ -20,9 +21,9 @@ namespace AUTRA.FEM.Entities.Structures
 
 
         #region Constructors
-        public TrussStructure(List<Node> nodes, List<LineElement> elements)
+        public TrussStructure(List<Node3D> nodes, List<LineElement> elements)
         {
-           Geometry= new Geometry(elements, nodes);
+           Geometry= new SkeletonGeometry(elements, nodes);
             DofHandler = new DofHandler(Geometry);
             Assembler = new Assembler(DofHandler);
         }

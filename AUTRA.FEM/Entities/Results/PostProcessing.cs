@@ -14,7 +14,7 @@ namespace AUTRA.FEM.Entities.Results
     public class PostProcessing
     {
         #region Private Fields
-        private readonly Geometry _geometry;
+        private readonly SkeletonGeometry _geometry;
         private readonly DofHandler _dofHandler;
         #endregion
 
@@ -24,7 +24,7 @@ namespace AUTRA.FEM.Entities.Results
         #endregion
 
         #region Constructor
-        public PostProcessing(Geometry geometry,DofHandler dh, Vector<double> udofs)
+        public PostProcessing(SkeletonGeometry geometry,DofHandler dh, Vector<double> udofs)
         {
             _geometry = geometry;
             _dofHandler = dh;

@@ -1,19 +1,19 @@
 ﻿using MathNet.Spatial.Euclidean;
 using System.Numerics;
 
-namespace AUTRA.FEM.Entities.BoundaryConditions
+namespace AUTRA.FEM.Entities.BoundaryConditions.Forces
 {
-    public class NodalForce
+    public class NodalForce3D : NodalForce
     {
         public Vector3D Components { get; }
-        
 
-        public NodalForce(double fx, double fy, double fz)
+
+        public NodalForce3D(double fx, double fy, double fz)
         {
             Components = new Vector3D(fx, fy, fz);
         }
 
-        public NodalForce()
+        public NodalForce3D()
         {
             Components = new Vector3D(0, 0, 0);
         }
