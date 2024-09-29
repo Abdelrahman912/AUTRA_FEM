@@ -2,6 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
+using System.Collections.Generic;
 
 namespace AUTRA.FEM.Entities.Elements
 {
@@ -22,6 +23,8 @@ namespace AUTRA.FEM.Entities.Elements
         public Matrix<double> K => _k.Value;
         public Matrix<double> T => _t.Value;
         public Matrix<double> B => _b.Value;
+
+        public override List<Node> Nodes => new List<Node> { Node1, Node2 };
         #endregion
 
         #region Constructors

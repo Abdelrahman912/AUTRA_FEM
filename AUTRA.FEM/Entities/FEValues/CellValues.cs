@@ -13,10 +13,12 @@ namespace AUTRA.FEM.Entities.FEValues
         private FEValues _fevalues;
         private Quadrilateral _quad;
         private Lazy<List<GPCellValue>> _values;
+        private Lazy<Matrix<double>> _K;
         #endregion
 
         #region Properties
         public List<GPCellValue> Values => _values.Value;
+        public Matrix<double> K => _K.Value;
         #endregion
 
         #region Constructors
@@ -25,6 +27,7 @@ namespace AUTRA.FEM.Entities.FEValues
             _fevalues = fevalues;
             _quad = quad;
             _values = new Lazy<List<GPCellValue>>(CalculateValues);
+            _K = new Lazy<Matrix<double>>(() => CalculateK(quad.C, quad.h));
         }
 
         #endregion

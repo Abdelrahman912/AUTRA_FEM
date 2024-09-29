@@ -1,18 +1,12 @@
-﻿using AUTRA.FEM.Entities.Elements;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
-using System;
+﻿using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AUTRA.FEM.Entities.Solver
 {
     public class Assembler
     {
         #region Private Fields
-        private readonly DofHandler _dofHandler;
+        private readonly DofHandler.DofHandler _dofHandler;
         #endregion
 
         #region Properties
@@ -20,7 +14,7 @@ namespace AUTRA.FEM.Entities.Solver
         #endregion
 
         #region Constructors
-        public Assembler(DofHandler dofHandler)
+        public Assembler(DofHandler.DofHandler dofHandler)
         {
             _dofHandler = dofHandler;
         }

@@ -1,6 +1,6 @@
 ﻿using AUTRA.FEM.Entities.Elements;
 using AUTRA.FEM.Entities.Geometries;
-using AUTRA.FEM.Entities.Solver;
+using AUTRA.FEM.Entities.Solver.DofHandler;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Spatial.Euclidean;
 using System;

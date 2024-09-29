@@ -1,23 +1,22 @@
-﻿using AUTRA.FEM.Entities.BoundaryConditions.Forces;
-using AUTRA.FEM.Entities.Geometries;
-using AUTRA.FEM.Entities.Nodes;
+﻿using AUTRA.FEM.Entities.Geometries;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AUTRA.FEM.Entities.Solver
+namespace AUTRA.FEM.Entities.Solver.DofHandler
 {
-    public class DofHandler
+    public abstract class DofHandler
     {
         #region Private Fields
+
         private readonly Dictionary<int, List<int>> _nodeDofNumbers;
         private readonly Dictionary<int, List<int>> _elesDofNumbers;
-        private readonly SkeletonGeometry _geometry;
-        private Lazy<int> _noDofs ;
-        private Lazy<List<int>> _elesId;
-        private Lazy<List<int>> _nodesId;
+        protected readonly Geometry _geometry;
+        private readonly Lazy<int> _noDofs;
+        private readonly Lazy<List<int>> _elesId;
+        private readonly Lazy<List<int>> _nodesId;
+
         #endregion
 
         #region Properties
@@ -28,7 +27,7 @@ namespace AUTRA.FEM.Entities.Solver
         #endregion
 
         #region Constructor
-        public DofHandler(SkeletonGeometry geometry)
+        public DofHandler(Geometry geometry)
         {
             _geometry = geometry;
             _nodeDofNumbers = new Dictionary<int, List<int>>();
@@ -64,9 +63,7 @@ namespace AUTRA.FEM.Entities.Solver
             }
             foreach (var ele in _geometry.Elements)
             {
-                var n1 = ele.Node1;
-                var n2 = ele.Node2;
-                var nodes = new List<Node3D> { n1, n2 };
+                var nodes = ele.Nodes;
                 var dofs = nodes.SelectMany(n => _nodeDofNumbers[n.Id]).ToList();
                 _elesDofNumbers.Add(ele.Id, dofs);
             }
@@ -89,15 +86,11 @@ namespace AUTRA.FEM.Entities.Solver
             return _nodeDofNumbers[nodeId];
         }
 
-        public Matrix<double> GetElementStiffnessMatrix(int eleId)
-        {
-            return _geometry.GetElementFromId(eleId).K;
-        }
+        public abstract Matrix<double> GetElementStiffnessMatrix(int eleId);
+       
 
-        public Vector<double> GetNodalForce(int nodeId)
-        {
-            return ((NodalForce3D)_geometry.GetNodeFromId(nodeId).NodalForce).Components.ToVector();
-        }
+        public abstract Vector<double> GetNodalForce(int nodeId);
+       
 
         #endregion
 

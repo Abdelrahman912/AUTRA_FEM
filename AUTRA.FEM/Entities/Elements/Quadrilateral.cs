@@ -28,6 +28,8 @@ namespace AUTRA.FEM.Entities.Elements
 
         public Matrix<double> C => _law.C;
 
+        public override List<Node> Nodes => new List<Node> { Node1, Node2, Node3, Node4 };
+
         #endregion
 
         #region Constructors

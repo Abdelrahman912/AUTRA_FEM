@@ -4,14 +4,14 @@ using System.Text;
 
 namespace AUTRA.FEM.Entities.NumericalIntegration
 {
-    public abstract class QuadratureRule
+    public  class QuadratureRule
     {
         #region Properties
         public List<GaussPoint> GaussPoints { get; }
         #endregion
 
         #region Constructors
-        protected QuadratureRule(NoQuadraturePoints nqp)
+        public QuadratureRule(NoQuadraturePoints nqp)
         {
             GaussPoints = CalculateGaussPoints(nqp);
         }
