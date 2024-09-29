@@ -37,14 +37,13 @@ namespace AUTRA.FEM.Entities.FEValues
         private List<GPCellValue> CalculateValues()
         {
             var coords = _quad.Coordinates;
-            _fevalues.Values.Select(fevalue =>
+           return  _fevalues.Values.Select(fevalue =>
             {
                 var dndxi = fevalue.dNdXi;
                 var J = CalculateJacobian(dndxi, coords);
                 var dndx = CalculateDNDX(J, dndxi);
                 return new GPCellValue(fevalue.GaussPoint, dndx, J);
-            });
-            return new List<GPCellValue>();
+            }).ToList();
         }
 
 

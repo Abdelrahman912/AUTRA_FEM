@@ -56,7 +56,7 @@ namespace AUTRA.FEM.Entities.Results
         private Dictionary<int, double> PostProcessElementForces()
         {
            var eles = _geometry.Elements;
-            var elementForces = eles.ToDictionary(ele => ele.Id, ele => CalculateElementNormalForce(ele));
+            var elementForces = eles.ToDictionary(ele => ele.Id, ele => CalculateElementNormalForce(ele as LineElement));
             return elementForces;
         }
 
