@@ -4,6 +4,7 @@ using AUTRA.FEM.Entities.FEValues;
 using AUTRA.FEM.Entities.Geometries;
 using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
+using System.Text;
 
 namespace AUTRA.FEM.Entities.Solver.DofHandler
 {
@@ -44,6 +45,42 @@ namespace AUTRA.FEM.Entities.Solver.DofHandler
             {
                 throw new KeyNotFoundException("Element not found in the dictionary");
             }
+        }
+
+        public override string ToString()
+        {
+            var str = new StringBuilder();
+            str.AppendLine("DOFs:");
+            str.AppendLine("");
+            str.AppendLine("Nodes:");
+            str.AppendLine("");
+            // first we print the dofs for each node
+            foreach (var node in _geometry.Nodes)
+            {
+                str.Append($"Node {node.Id} dofs: ");
+                var dofs = GetNodeDofs(node.Id);
+                foreach (var dof in dofs)
+                {
+                    str.Append($"{dof} ");
+                }
+                str.AppendLine();
+            }
+
+            str.AppendLine("Elements");
+
+            // then we print the dofs for each element
+            foreach (var ele in _geometry.Elements)
+            {
+                str.Append($"Element {ele.Id} dofs: ");
+                var dofs = GetElementDofs(ele.Id);
+                foreach (var dof in dofs)
+                {
+                    str.Append($"{dof} ");
+                }
+                str.AppendLine();
+            }
+            str.AppendLine("");
+            return str.ToString();
         }
 
     }

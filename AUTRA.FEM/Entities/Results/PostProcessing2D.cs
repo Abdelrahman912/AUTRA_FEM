@@ -99,6 +99,38 @@ namespace AUTRA.FEM.Entities.Results
 
         }
 
+        public override string ToString()
+        {
+            var str = new StringBuilder();
+            // first we will print the Dofs
+            var dofs = _dofHandler.ToString();
+            str.Append(dofs);
+
+            // then we will print the nodal displacements
+            str.AppendLine("Nodal Displacements");
+            str.AppendLine("");
+            foreach (var node in _geometry.Nodes)
+            {
+                str.AppendLine($"Node {node.Id} displacements: {NodalDisplacements[node.Id]}");
+            }
+
+            str.AppendLine("");
+
+            // then we will print the element stress tensors
+            str.AppendLine("Element Stress Tensors");
+            str.AppendLine("");
+            foreach (var ele in _geometry.Elements)
+            {
+                str.AppendLine($"Element {ele.Id} stress tensors:");
+                foreach (var stress in ElementStressTensor[ele.Id])
+                {
+                    str.AppendLine(stress.ToString());
+                }
+            }
+            return str.ToString();
+
+        }
+
         #endregion
     }
 }

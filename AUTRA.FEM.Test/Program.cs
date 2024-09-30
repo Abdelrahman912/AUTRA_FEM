@@ -5,6 +5,7 @@ using AUTRA.FEM.Entities.Nodes;
 using AUTRA.FEM.Entities.Structures;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace AUTRA.FEM.Test
 {
@@ -19,11 +20,15 @@ namespace AUTRA.FEM.Test
 
             //test plane stress/strain structure (e.g. linear plane stress)
             var planeStress = TestProblems.CreatePlaneStressLinearStructure();
-            var u = planeStress.Solve();
+            var linearPP = planeStress.Solve();
+            Console.WriteLine(linearPP.ToString());
 
             //test plane stress/strain structure (e.g. quadratic plane stress)
             var planeStressQuad = TestProblems.CreatePlaneStressQuadraticStructure();
-            var uQuad = planeStressQuad.Solve();
+            var quadPP = planeStressQuad.Solve();
+            Console.WriteLine(quadPP.ToString());
+
+
         }
     }
 }

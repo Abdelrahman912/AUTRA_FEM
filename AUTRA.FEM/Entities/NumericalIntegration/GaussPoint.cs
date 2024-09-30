@@ -1,4 +1,6 @@
-﻿namespace AUTRA.FEM.Entities.NumericalIntegration
+﻿using System;
+
+namespace AUTRA.FEM.Entities.NumericalIntegration
 {
     public class GaussPoint
     {
@@ -16,6 +18,13 @@
             Xi2 = xi2;
             W1 = w1;
             W2 = w2;
+        }
+        #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return $"({Math.Round(Xi1, 3)},{Math.Round(Xi2, 3)})";
         }
         #endregion
     }
