@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AUTRA.FEM.Entities.Interpolation
 {
-    internal class BiquadraticLagrange : Lagrange
+    public class BiquadraticLagrange : Lagrange
     {
         public override List<Vector2D> ShapeDerivatives(GaussPoint gaussPoint)
         {

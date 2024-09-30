@@ -2,11 +2,12 @@
 using AUTRA.FEM.Entities.BoundaryConditions.Forces;
 using AUTRA.FEM.Entities.ConstitutiveLaw;
 using AUTRA.FEM.Entities.Elements;
+using AUTRA.FEM.Entities.Interpolation;
 using AUTRA.FEM.Entities.Nodes;
+using AUTRA.FEM.Entities.NumericalIntegration;
 using AUTRA.FEM.Entities.Structures;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AUTRA.FEM.Test
 {
@@ -46,7 +47,7 @@ namespace AUTRA.FEM.Test
             return structure;
         }
 
-        public static PlaneStructure CreatePlaneStressStructure()
+        public static PlaneStructure CreatePlaneStressLinearStructure()
         {
             var fixedSupport = new Constraint2D(false, false);
             var force = new NodalForce2D(0, -10);
@@ -56,8 +57,37 @@ namespace AUTRA.FEM.Test
             var n4 = new Node2D(4, 0, 1,force);
             var planeStressLaw = new PlaneStress(1000, 0.3);
             var h = 0.2;
-            var quad = new Quadrilateral(1, n1, n2, n3, n4,h, planeStressLaw);
-            var structure = new PlaneStructure( new List<Node2D> { n1, n2, n3, n4 }, new List<Quadrilateral> { quad }, planeStressLaw);
+            var nodes = new List<Node2D> { n1, n2, n3, n4 };
+            var quad = new Quadrilateral(1, nodes,h, planeStressLaw);
+            var elements = new List<Quadrilateral> { quad };
+            var structure = new PlaneStructure( nodes,elements, planeStressLaw, NoQuadraturePoints.TWO,new BilinearLagrange());
+            return structure;
+        }
+
+        public static PlaneStructure CreatePlaneStressQuadraticStructure()
+        {
+            var fixedSupport = new Constraint2D(false, false);
+            var force = new NodalForce2D(0, -10);
+            // corner nodes
+            var n1 = new Node2D(1, 0, 0, fixedSupport, new NodalForce2D());
+            var n2 = new Node2D(2, 1, 0, fixedSupport, new NodalForce2D());
+            var n3 = new Node2D(3, 1, 1);
+            var n4 = new Node2D(4, 0, 1, force);
+
+            // edge nodes
+            var n5 = new Node2D(5, 0.5, 0, fixedSupport, new NodalForce2D());
+            var n6 = new Node2D(6, 1, 0.5);
+            var n7 = new Node2D(7, 0.5, 1);
+            var n8 = new Node2D(8, 0, 0.5);
+            // bubble node
+            var n9 = new Node2D(9, 0.5, 0.5);
+
+            var planeStressLaw = new PlaneStress(1000, 0.3);
+            var h = 0.2;
+            var nodes = new List<Node2D> { n1, n2, n3, n4, n5, n6, n7, n8, n9 };
+            var quad = new Quadrilateral(1, nodes, h, planeStressLaw);
+            var elements = new List<Quadrilateral> { quad };
+            var structure = new PlaneStructure(nodes, elements, planeStressLaw, NoQuadraturePoints.THREE, new BiquadraticLagrange());
             return structure;
         }
     }

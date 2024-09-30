@@ -17,9 +17,13 @@ namespace AUTRA.FEM.Test
             var postProcessing = smallTetraeder.Solve();
             var force = postProcessing.ElementNormalForce;
 
-            //test plane stress/strain
-            var planeStress = TestProblems.CreatePlaneStressStructure();
+            //test plane stress/strain structure (e.g. linear plane stress)
+            var planeStress = TestProblems.CreatePlaneStressLinearStructure();
             var u = planeStress.Solve();
+
+            //test plane stress/strain structure (e.g. quadratic plane stress)
+            var planeStressQuad = TestProblems.CreatePlaneStressQuadraticStructure();
+            var uQuad = planeStressQuad.Solve();
         }
     }
 }

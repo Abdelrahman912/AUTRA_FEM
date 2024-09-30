@@ -31,11 +31,11 @@ namespace AUTRA.FEM.Entities.Structures
         #endregion
 
         #region Methods
-        public PostProcessing Solve()
+        public PostProcessing1D Solve()
         {
             var (K, F) = Assembler.Assemble();
             var u = K.Solve(F);
-            var postProcessing = new PostProcessing(Geometry, DofHandler, u);
+            var postProcessing = new PostProcessing1D(Geometry, DofHandler, u);
             return postProcessing;
         }
 

@@ -4,6 +4,7 @@ using AUTRA.FEM.Entities.Geometries;
 using AUTRA.FEM.Entities.Interpolation;
 using AUTRA.FEM.Entities.Nodes;
 using AUTRA.FEM.Entities.NumericalIntegration;
+using AUTRA.FEM.Entities.Results;
 using AUTRA.FEM.Entities.Solver;
 using AUTRA.FEM.Entities.Solver.DofHandler;
 using MathNet.Numerics.LinearAlgebra;
@@ -28,11 +29,13 @@ namespace AUTRA.FEM.Entities.Structures
         #endregion
 
         #region Constructors
-        public PlaneStructure(List<Node2D> nodes, List<Quadrilateral> elements, ConstitutiveLaw2D law)
+        public PlaneStructure(List<Node2D> nodes, List<Quadrilateral> elements,
+                              ConstitutiveLaw2D law,
+                              NoQuadraturePoints nqps,
+                              Lagrange ip)
         {
             Grid = new GridGeometry(elements, nodes);
-            var qr = new QuadratureRule(NoQuadraturePoints.TWO);
-            var ip = new BilinearLagrange();
+            var qr = new QuadratureRule(nqps);
             _feValues = new FEValues.FEValues(qr, ip);
             DofHandler = new DofHandler2D(Grid,_feValues);
             Assembler = new Assembler(DofHandler);
@@ -41,11 +44,12 @@ namespace AUTRA.FEM.Entities.Structures
 
 
         #region Methods
-        public Vector<double> Solve()
+        public PostProcessing2D Solve()
         {
             var (K, F) = Assembler.Assemble();
             var u = K.Solve(F);
-            return u;
+            var pp = new Results.PostProcessing2D(Grid, DofHandler, u);
+            return pp;
         }
         #endregion
 

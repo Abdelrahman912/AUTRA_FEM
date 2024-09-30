@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace AUTRA.FEM.Entities.Results
 {
-    public class PostProcessing
+    public class PostProcessing1D
     {
         #region Private Fields
         private readonly SkeletonGeometry _geometry;
-        private readonly DofHandler _dofHandler;
+        private readonly DofHandler1D _dofHandler;
         #endregion
 
         #region Properties
@@ -24,7 +24,7 @@ namespace AUTRA.FEM.Entities.Results
         #endregion
 
         #region Constructor
-        public PostProcessing(SkeletonGeometry geometry,DofHandler dh, Vector<double> udofs)
+        public PostProcessing1D(SkeletonGeometry geometry,DofHandler1D dh, Vector<double> udofs)
         {
             _geometry = geometry;
             _dofHandler = dh;

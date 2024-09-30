@@ -38,7 +38,7 @@ namespace AUTRA.Dtos
         }
 
 
-        public static PostProcessingDto ToDto(this PostProcessing pp)
+        public static PostProcessingDto ToDto(this PostProcessing1D pp)
         {
             var nodalDisplacements = pp.NodalDisplacements.Select(kvp => new NodalDisplacementDto
             {
