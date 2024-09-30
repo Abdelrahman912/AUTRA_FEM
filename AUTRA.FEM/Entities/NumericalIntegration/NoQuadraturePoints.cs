@@ -7,5 +7,6 @@ namespace AUTRA.FEM.Entities.NumericalIntegration
     public enum NoQuadraturePoints
     {
         TWO = 2,
+        THREE = 3,
     }
 }

@@ -33,6 +33,20 @@ namespace AUTRA.FEM.Entities.NumericalIntegration
                         new GaussPoint(-1.0 / Math.Sqrt(3.0), 1.0 / Math.Sqrt(3.0), 1.0, 1.0)
                     };
                     break;
+                case NoQuadraturePoints.THREE:
+                    gps = new List<GaussPoint>
+                    {
+                        new GaussPoint(-Math.Sqrt(3.0 / 5.0), -Math.Sqrt(3.0 / 5.0), 5.0 / 9.0, 5.0 / 9.0),
+                        new GaussPoint(0.0, -Math.Sqrt(3.0 / 5.0), 8.0 / 9.0, 5.0 / 9.0),
+                        new GaussPoint(Math.Sqrt(3.0 / 5.0), -Math.Sqrt(3.0 / 5.0), 5.0 / 9.0, 5.0 / 9.0),
+                        new GaussPoint(-Math.Sqrt(3.0 / 5.0), 0.0, 5.0 / 9.0, 8.0 / 9.0),
+                        new GaussPoint(0.0, 0.0, 8.0 / 9.0, 8.0 / 9.0),
+                        new GaussPoint(Math.Sqrt(3.0 / 5.0), 0.0, 5.0 / 9.0, 8.0 / 9.0),
+                        new GaussPoint(-Math.Sqrt(3.0 / 5.0), Math.Sqrt(3.0 / 5.0), 5.0 / 9.0, 5.0 / 9.0),
+                        new GaussPoint(0.0, Math.Sqrt(3.0 / 5.0), 8.0 / 9.0, 5.0 / 9.0),
+                        new GaussPoint(Math.Sqrt(3.0 / 5.0), Math.Sqrt(3.0 / 5.0), 5.0 / 9.0, 5.0 / 9.0)
+                    };
+                    break;
                 default:
                     gps = new List<GaussPoint>();
                     break;
